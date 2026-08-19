@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POSN PHYSICS QUIZ · ฟิสิกส์ สอวน. ค่าย 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=STIX+Two+Text:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F2E7; --paper2:#FDFAF3; --card:#ffffff;
+  --ink:#2b2417; --ink2:#5c4f38; --dim:#8a7c62;
+  --wave:#1E6091; --wave2:#3BA3C7; --gold:#B67C09; --gold2:#F4B740;
+  --green:#0d8a63; --green2:#12B886; --coral:#c0492f; --violet:#6b5bb5;
+  --line:#e2d8c3; --line2:#d3c6ab;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Sarabun',sans-serif; color:var(--ink); min-height:100vh; position:relative;
+  background:
+    radial-gradient(ellipse 800px 500px at 12% -5%, rgba(59,163,199,.10), transparent 62%),
+    radial-gradient(ellipse 700px 480px at 105% 15%, rgba(244,183,64,.13), transparent 58%),
+    radial-gradient(ellipse 600px 420px at 45% 108%, rgba(107,91,181,.08), transparent 60%),
+    var(--paper);
+  overflow-x:hidden; padding:26px 16px 50px;
+}
+/* graph-paper grid */
+body::before{content:""; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.5;
+  background-image:linear-gradient(rgba(30,96,145,.05) 1px, transparent 1px),
+                   linear-gradient(90deg, rgba(30,96,145,.05) 1px, transparent 1px);
+  background-size:26px 26px}
+/* physics line art */
+.doodle{position:fixed; z-index:0; pointer-events:none; opacity:.5}
+.d1{top:-90px; right:-70px; width:340px; animation:spin 80s linear infinite}
+.d2{bottom:-110px; left:-90px; width:380px; animation:spin 110s linear infinite reverse}
+.d3{top:38%; left:-60px; width:210px; opacity:.35}
+.d4{bottom:14%; right:-40px; width:230px; opacity:.35}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.wrap{position:relative; z-index:2; max-width:640px; margin:0 auto}
+
+/* ===== header ===== */
+.brand{text-align:center; margin-bottom:20px}
+.badge{display:inline-flex; align-items:center; gap:8px; font-family:'Orbitron'; font-weight:700;
+  font-size:11px; letter-spacing:.24em; color:var(--wave); background:#fff;
+  border:1.5px solid var(--line2); padding:6px 15px; border-radius:100px; text-transform:uppercase;
+  box-shadow:0 2px 10px rgba(120,95,40,.08)}
+.badge .dot{width:6px;height:6px;border-radius:50%;background:var(--green2);
+  box-shadow:0 0 8px var(--green2); animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.3}}
+.brand h1{font-family:'Prompt'; font-weight:800; font-size:26px; margin-top:13px; color:var(--wave)}
+.brand .sub{color:var(--dim); font-size:13px; margin-top:3px}
+
+.card{background:var(--card); border:1.5px solid var(--line); border-radius:18px; padding:26px 24px;
+  box-shadow:0 8px 30px rgba(120,95,40,.09), 0 1px 0 #fff inset}
+
+/* ===== login ===== */
+.field{margin-bottom:17px}
+.field label{display:block; font-size:13.5px; font-weight:600; color:var(--ink2); margin-bottom:7px}
+.field .hint{font-weight:400; color:var(--dim); font-size:11.5px; margin-left:5px}
+.inp{width:100%; background:var(--paper2); border:1.8px solid var(--line2); border-radius:11px;
+  padding:13px 15px; font-family:'Sarabun'; font-size:16px; color:var(--ink); outline:none; transition:.16s}
+.inp:focus{border-color:var(--wave2); box-shadow:0 0 0 3px rgba(59,163,199,.14); background:#fff}
+.inp.mono{font-family:'JetBrains Mono'; letter-spacing:.1em; text-transform:uppercase}
+.inp::placeholder{color:#b3a68c; text-transform:none; letter-spacing:normal}
+
+.btn{width:100%; border:none; cursor:pointer; font-family:'Prompt'; font-weight:700; font-size:16px;
+  color:#fff; background:linear-gradient(120deg,var(--wave) 0%, var(--wave2) 100%);
+  padding:15px; border-radius:12px; transition:.16s; box-shadow:0 8px 22px rgba(30,96,145,.25)}
+.btn:hover{transform:translateY(-1px); box-shadow:0 12px 28px rgba(30,96,145,.32)}
+.btn:disabled{opacity:.5; cursor:not-allowed; transform:none}
+.btn.gold{background:linear-gradient(120deg,var(--gold) 0%, var(--gold2) 110%); box-shadow:0 8px 22px rgba(182,124,9,.25)}
+.btn.ghost{background:#fff; color:var(--wave); border:1.8px solid var(--line2); box-shadow:none}
+
+.msg{margin-top:14px; padding:12px 15px; border-radius:11px; font-size:13.5px; display:none; line-height:1.55}
+.msg.show{display:block; animation:slideIn .25s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.msg.ok{background:#e9f7f0; border:1.5px solid #a9e0c8; color:#0a6a4c}
+.msg.warn{background:#fdf3e0; border:1.5px solid #f0d49a; color:#8a6210}
+.msg.err{background:#fdeeea; border:1.5px solid #f2c0b3; color:#a63a22}
+
+.spinner{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.35);
+  border-top-color:#fff;border-radius:50%;animation:sp .6s linear infinite;vertical-align:-2px;margin-right:7px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ===== quiz ===== */
+.qhead{display:flex; align-items:center; gap:12px; margin-bottom:16px}
+.qcount{font-family:'Orbitron'; font-weight:700; font-size:14px; color:var(--wave);
+  background:#fff; border:1.5px solid var(--line2); border-radius:10px; padding:7px 13px; white-space:nowrap}
+.pbar{flex:1; height:9px; background:#e8dfcc; border-radius:100px; overflow:hidden}
+.pfill{height:100%; width:0%; border-radius:100px; transition:width .35s ease;
+  background:linear-gradient(90deg,var(--wave2),var(--wave))}
+.timer{position:relative; width:52px; height:52px; flex-shrink:0}
+.timer svg{transform:rotate(-90deg)}
+.timer .tnum{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:'Orbitron'; font-weight:700; font-size:15px; color:var(--wave)}
+.timer.warnT .tnum{color:var(--coral)}
+.timer.warnT{animation:shake .5s ease-in-out infinite}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
+
+.qtype{display:inline-block; font-size:11.5px; font-family:'Prompt'; font-weight:600; padding:4px 12px;
+  border-radius:100px; margin-bottom:12px; letter-spacing:.02em}
+.qtype.k{background:#eef1f8; color:#4d5a80; border:1px solid #ccd5e8}
+.qtype.a{background:#e8f2f9; color:#1a5580; border:1px solid #bcd9ea}
+.qtype.ec{background:#e9f7f0; color:#0a6a4c; border:1px solid #b3e2cd}
+.qtype.mc{background:#fdf3e0; color:#8a6210; border:1px solid #f0d9a8}
+
+.qtext{font-size:18px; font-weight:600; line-height:1.6; margin-bottom:20px; color:var(--ink)}
+.opts{display:grid; gap:10px}
+.opt{display:flex; align-items:flex-start; gap:12px; background:var(--paper2);
+  border:1.8px solid var(--line2); border-radius:12px; padding:14px 16px; cursor:pointer;
+  transition:.14s; font-size:15.5px; line-height:1.5; text-align:left}
+.opt:hover{border-color:var(--wave2); background:#fff; transform:translateX(3px)}
+.opt .k{font-family:'Orbitron'; font-weight:700; font-size:13px; color:var(--wave);
+  background:#fff; border:1.5px solid var(--line2); border-radius:8px; min-width:30px; height:30px;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0}
+.opt.sel{border-color:var(--wave); background:#eaf3fa}
+.opt.sel .k{background:var(--wave); color:#fff; border-color:var(--wave)}
+.opt.lock{pointer-events:none; opacity:.85}
+
+/* ===== result ===== */
+.hero{text-align:center; padding:8px 0 4px; position:relative; overflow:hidden}
+.scoreBig{font-family:'Orbitron'; font-weight:900; font-size:62px; line-height:1;
+  background:linear-gradient(120deg,var(--wave),var(--wave2) 60%,var(--gold2)); -webkit-background-clip:text;
+  background-clip:text; -webkit-text-fill-color:transparent; animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.scoreSub{font-family:'Orbitron'; font-weight:700; font-size:15px; color:var(--dim); margin-top:2px}
+.memeBox{margin:18px 0 4px; padding:20px 18px; border-radius:16px; text-align:center; position:relative;
+  animation:slideUp .5s .2s both cubic-bezier(.2,1.2,.4,1)}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.memeArt{height:96px; margin-bottom:10px}
+.memeTitle{font-family:'Prompt'; font-weight:800; font-size:22px; margin-bottom:6px}
+.memeText{font-size:14.5px; line-height:1.6; opacity:.9}
+.statRow{display:flex; gap:10px; margin-top:18px}
+.stat{flex:1; background:var(--paper2); border:1.5px solid var(--line); border-radius:12px;
+  padding:12px 8px; text-align:center}
+.stat .n{font-family:'Orbitron'; font-weight:700; font-size:21px}
+.stat .l{font-size:11.5px; color:var(--dim); margin-top:2px}
+.stat.ok .n{color:var(--green)} .stat.no .n{color:var(--coral)} .stat.t .n{color:var(--gold)}
+
+.revItem{background:#fff; border:1.5px solid var(--line); border-left:5px solid var(--green);
+  border-radius:0 12px 12px 0; padding:15px 17px; margin-bottom:12px}
+.revItem.wrong{border-left-color:var(--coral)}
+.revItem .rq{font-weight:600; font-size:15.5px; margin-bottom:10px; line-height:1.55}
+.revItem .rtop{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;
+  font-size:12px; font-family:'Prompt'}
+.revItem .rno{font-weight:700; color:var(--wave)}
+.mark{font-weight:700; font-size:12px; padding:3px 10px; border-radius:100px}
+.mark.ok{background:#e9f7f0; color:#0a6a4c} .mark.no{background:#fdeeea; color:#a63a22}
+.mark.to{background:#f3f0e6; color:#7a6c50}
+.rline{font-size:14px; padding:7px 12px; border-radius:8px; margin-bottom:6px}
+.rline.correct{background:#e9f7f0; border:1px solid #b3e2cd; color:#0a6a4c; font-weight:600}
+.rline.yours{background:#fdeeea; border:1px solid #f2c0b3; color:#a63a22}
+.rexp{margin-top:8px; font-size:13.5px; color:#5c4a20; background:#FEF6E3;
+  border-left:4px solid var(--gold2); border-radius:0 8px 8px 0; padding:10px 13px; line-height:1.6}
+
+/* ===== step indicator + id card ===== */
+.stepbar{display:flex; align-items:center; gap:7px; font-size:12.5px; font-family:'Prompt';
+  font-weight:500; color:var(--dim); margin-bottom:18px; flex-wrap:wrap}
+.stepnum{width:22px;height:22px;border-radius:50%; display:inline-flex; align-items:center;
+  justify-content:center; font-family:'Orbitron'; font-weight:700; font-size:11px;
+  background:#ece4d3; color:#a08d6a; flex-shrink:0}
+.stepnum.on{background:var(--wave); color:#fff}
+.stepnum.done{background:var(--green); color:#fff}
+.stepline{flex:1; height:2px; background:#e8dfcc; min-width:14px; border-radius:2px}
+.stepline.on{background:var(--green)}
+
+.idcard{display:flex; align-items:center; gap:14px; background:linear-gradient(120deg,#eef9f4,#e2f4ec);
+  border:1.8px solid #a9e0c8; border-radius:14px; padding:16px 18px; animation:slideIn .3s ease}
+.idck{width:38px;height:38px;border-radius:50%; background:var(--green); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:700; flex-shrink:0;
+  box-shadow:0 4px 12px rgba(13,138,99,.3)}
+.idname{font-family:'Prompt'; font-weight:700; font-size:19px; color:#0a6a4c; line-height:1.3}
+.idmeta{font-size:13px; color:#3f7a63; margin-top:2px}
+.notme{text-align:center; margin-top:11px; font-size:13px; color:var(--wave);
+  cursor:pointer; font-weight:500; padding:6px; border-radius:8px; transition:.14s}
+.notme:hover{background:#eaf3fa; text-decoration:underline}
+
+#confetti{position:fixed; inset:0; z-index:99; pointer-events:none; display:none}
+.hide{display:none !important}
+.sectitle{font-family:'Prompt'; font-weight:700; font-size:17px; color:var(--wave);
+  margin:26px 0 13px; padding-bottom:8px; border-bottom:2.5px solid var(--gold2)}
+.mono{font-family:'JetBrains Mono'}
+</style>
+</head>
+<body>
+
+<svg class="doodle d1" viewBox="0 0 200 200" fill="none">
+  <ellipse cx="100" cy="100" rx="88" ry="34" stroke="#1E6091" stroke-width=".8" transform="rotate(25 100 100)"/>
+  <ellipse cx="100" cy="100" rx="88" ry="34" stroke="#B67C09" stroke-width=".8" transform="rotate(85 100 100)"/>
+  <ellipse cx="100" cy="100" rx="88" ry="34" stroke="#6b5bb5" stroke-width=".8" transform="rotate(145 100 100)"/>
+  <circle cx="100" cy="100" r="7" fill="#F4B740"/>
+</svg>
+<svg class="doodle d2" viewBox="0 0 200 200" fill="none">
+  <ellipse cx="100" cy="100" rx="88" ry="28" stroke="#3BA3C7" stroke-width=".8" transform="rotate(55 100 100)"/>
+  <ellipse cx="100" cy="100" rx="88" ry="28" stroke="#12B886" stroke-width=".8" transform="rotate(125 100 100)"/>
+  <circle cx="188" cy="100" r="5" fill="#3BA3C7"/>
+</svg>
+<svg class="doodle d3" viewBox="0 0 200 100" fill="none">
+  <path d="M0,50 Q25,5 50,50 T100,50 T150,50 T200,50" stroke="#1E6091" stroke-width="1.4"/>
+  <path d="M0,50 Q25,80 50,50 T100,50" stroke="#B67C09" stroke-width="1" stroke-dasharray="4 3"/>
+</svg>
+<svg class="doodle d4" viewBox="0 0 200 120" fill="none">
+  <line x1="10" y1="110" x2="190" y2="110" stroke="#5c4f38" stroke-width="1.2"/>
+  <line x1="10" y1="110" x2="10" y2="10" stroke="#5c4f38" stroke-width="1.2"/>
+  <path d="M10,110 Q100,-8 190,110" stroke="#c0492f" stroke-width="1.5"/>
+  <line x1="10" y1="110" x2="52" y2="72" stroke="#B67C09" stroke-width="1.8"/>
+</svg>
+
+<canvas id="confetti"></canvas>
+
+<div class="wrap">
+
+  <!-- ========== LOGIN ========== -->
+  <div id="scLogin">
+    <div class="brand">
+      <div class="badge"><span class="dot"></span> POSN PHYSICS · CAMP 1</div>
+      <h1>เข้าทำแบบทดสอบ</h1>
+      <div class="sub">กรอกรหัสประจำตัว และรหัสโมดูลที่ครูกำหนด</div>
+    </div>
+    <div class="card">
+      <!-- ขั้นที่ 1 : ตรวจสอบรหัส -->
+      <div id="step1">
+        <div class="stepbar"><span class="stepnum on">1</span> ตรวจสอบรหัสประจำตัว
+          <span class="stepline"></span><span class="stepnum">2</span> เลือกโมดูล</div>
+        <div class="field">
+          <label>รหัสประจำตัวนักเรียน</label>
+          <input class="inp mono" id="sid" inputmode="numeric" autocomplete="off" placeholder="เช่น 06755" maxlength="12">
+        </div>
+        <button class="btn" id="btnCheck">ตรวจสอบรหัส →</button>
+      </div>
+
+      <!-- ขั้นที่ 2 : ยืนยันตัวตน + กรอกรหัสโมดูล -->
+      <div id="step2" class="hide">
+        <div class="stepbar"><span class="stepnum done">✓</span> ตรวจสอบรหัสประจำตัว
+          <span class="stepline on"></span><span class="stepnum on">2</span> เลือกโมดูล</div>
+        <div class="idcard">
+          <div class="idck">✓</div>
+          <div class="idinfo">
+            <div class="idname" id="vAlias">—</div>
+            <div class="idmeta">รหัส <span class="mono" id="vSid">—</span> · กลุ่ม <b id="vGroup">—</b></div>
+          </div>
+        </div>
+        <div class="notme" id="btnNotMe">↺ ไม่ใช่ฉัน — กรอกรหัสใหม่</div>
+        <div class="field" style="margin-top:16px">
+          <label>รหัสโมดูล <span class="hint">ครูจะเป็นผู้แจ้ง เช่น A1</span></label>
+          <input class="inp mono" id="mcode" autocomplete="off" placeholder="เช่น A1" maxlength="6">
+        </div>
+        <button class="btn gold" id="btnStart">ยืนยัน เริ่มทำแบบทดสอบ →</button>
+      </div>
+
+      <div class="msg" id="loginMsg"></div>
+    </div>
+    <div class="card" style="margin-top:14px; padding:16px 20px">
+      <div style="font-size:13px; color:var(--dim); line-height:1.7">
+        <b style="color:var(--ink2)">กติกา:</b> ข้อสอบ 15 ข้อ · แต่ละข้อมีเวลาจำกัดตามระดับ
+        (ทฤษฎี 30–45 วิ · คำนวณ 60–90 วิ) · <b style="color:var(--coral)">หมดเวลาจะข้ามอัตโนมัติและนับเป็นตอบผิด</b>
+        · เฉลยจะแสดงเมื่อทำครบทุกข้อ
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== QUIZ ========== -->
+  <div id="scQuiz" class="hide">
+    <div class="brand" style="margin-bottom:14px">
+      <div class="badge"><span class="dot"></span> <span id="modLabel">MODULE</span></div>
+    </div>
+    <div class="card">
+      <div class="qhead">
+        <div class="qcount"><span id="qNow">1</span>/<span id="qAll">15</span></div>
+        <div class="pbar"><div class="pfill" id="pfill"></div></div>
+        <div class="timer" id="timerBox">
+          <svg width="52" height="52">
+            <circle cx="26" cy="26" r="22" fill="none" stroke="#e8dfcc" stroke-width="5"/>
+            <circle cx="26" cy="26" r="22" fill="none" stroke="#1E6091" stroke-width="5"
+                    stroke-linecap="round" id="tRing" stroke-dasharray="138.2" stroke-dashoffset="0"/>
+          </svg>
+          <div class="tnum" id="tNum">30</div>
+        </div>
+      </div>
+      <div id="qtypeChip"></div>
+      <div class="qtext" id="qText"></div>
+      <div class="opts" id="qOpts"></div>
+    </div>
+  </div>
+
+  <!-- ========== RESULT ========== -->
+  <div id="scResult" class="hide">
+    <div class="card">
+      <div class="hero">
+        <div class="scoreBig"><span id="rScore">0</span></div>
+        <div class="scoreSub">/ <span id="rTotal">15</span> คะแนน</div>
+      </div>
+      <div class="memeBox" id="memeBox"></div>
+      <div class="statRow">
+        <div class="stat ok"><div class="n" id="rOk">0</div><div class="l">ตอบถูก</div></div>
+        <div class="stat no"><div class="n" id="rNo">0</div><div class="l">ตอบผิด</div></div>
+        <div class="stat t"><div class="n" id="rTo">0</div><div class="l">หมดเวลา</div></div>
+      </div>
+      <div class="msg" id="saveMsg" style="margin-top:16px"></div>
+      <button class="btn ghost" id="btnAgain" style="margin-top:14px">ทำโมดูลอื่นต่อ</button>
+    </div>
+    <div class="sectitle">เฉลยละเอียด</div>
+    <div id="review"></div>
+  </div>
+
+</div>
+
+<script>
+/* ================= ตั้งค่า ================= */
+const API_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+/* เวลาต่อข้อ (วินาที) ตามระดับความยาก */
+const TIME = { "ความรู้ความจำ":30, "วิเคราะห์":45, "คำนวณง่าย":60, "คำนวณปานกลาง":90 };
+const TYPECLASS = { "ความรู้ความจำ":"k", "วิเคราะห์":"a", "คำนวณง่าย":"ec", "คำนวณปานกลาง":"mc" };
+const KEY = ["ก","ข","ค","ง"];
+
+/* ================= ฐานข้อมูลโจทย์ ================= */
+const QUIZ_DB = {"1": {"title": "โมเมนตัมและการชน", "questions": [{"id": "M1-K1", "type": "ความรู้ความจำ", "q": "ปริมาณใดต่อไปนี้เป็นปริมาณเวกเตอร์", "choices": ["โมเมนตัม", "พลังงานจลน์", "มวล", "อัตราเร็ว"], "answer": 0, "explain": "โมเมนตัม p = mv มีทั้งขนาดและทิศทาง จึงเป็นเวกเตอร์"}, {"id": "M1-K2", "type": "ความรู้ความจำ", "q": "หน่วยของโมเมนตัมในระบบ SI คือข้อใด", "choices": ["kg·m/s", "kg·m/s²", "N·m", "J"], "answer": 0, "explain": "p = mv มีหน่วย (kg)(m/s) = kg·m/s"}, {"id": "M1-K3", "type": "ความรู้ความจำ", "q": "การชนแบบใดที่อนุรักษ์ทั้งโมเมนตัมและพลังงานจลน์", "choices": ["ชนแบบยืดหยุ่น", "ชนแบบไม่ยืดหยุ่น", "ชนแบบติดกัน", "การระเบิด"], "answer": 0, "explain": "การชนยืดหยุ่นอนุรักษ์ทั้งโมเมนตัมและพลังงานจลน์ ส่วนการชนไม่ยืดหยุ่นอนุรักษ์เฉพาะโมเมนตัม"}, {"id": "M1-K4", "type": "ความรู้ความจำ", "q": "ค่าสัมประสิทธิ์การคืนตัว (e) ของการชนแบบยืดหยุ่นสมบูรณ์มีค่าเท่าใด", "choices": ["1", "0", "0.5", "มากกว่า 1"], "answer": 0, "explain": "e = 1 คือชนยืดหยุ่นสมบูรณ์, e = 0 คือชนแล้วติดกัน"}, {"id": "M1-K5", "type": "ความรู้ความจำ", "q": "การดล(impulse) มีค่าเท่ากับปริมาณใด", "choices": ["การเปลี่ยนแปลงโมเมนตัม", "การเปลี่ยนแปลงพลังงานจลน์", "แรงคูณระยะทาง", "มวลคูณความเร่ง"], "answer": 0, "explain": "การดล J = FΔt = Δp = การเปลี่ยนแปลงโมเมนตัม (ทฤษฎีบทการดล-โมเมนตัม)"}, {"id": "M1-A1", "type": "วิเคราะห์", "q": "วัตถุมวลเบาชนวัตถุมวลหนักมากที่หยุดนิ่งแบบยืดหยุ่นใน 1 มิติ ผลลัพธ์ของวัตถุมวลเบาเป็นอย่างไร", "choices": ["สะท้อนกลับด้วยอัตราเร็วเกือบเท่าเดิม", "วิ่งต่อไปด้วยอัตราเร็วเท่าเดิม", "หยุดนิ่ง", "วิ่งต่อด้วยอัตราเร็วสองเท่า"], "answer": 0, "explain": "มวลเบาชนมวลหนักมาก จะสะท้อนกลับด้วยอัตราเร็วเกือบเท่าเดิม (เหมือนลูกบอลกระทบกำแพง)"}, {"id": "M1-A2", "type": "วิเคราะห์", "q": "การชนยืดหยุ่นระหว่างมวลเท่ากันโดยตัวหนึ่งหยุดนิ่งอยู่ก่อน หลังชนใน 2 มิติ มุมระหว่างความเร็วทั้งสองเป็นเท่าใด", "choices": ["90°", "60°", "45°", "180°"], "answer": 0, "explain": "มวลเท่ากันชนยืดหยุ่น 2 มิติ วัตถุทั้งสองแยกออกทำมุม 90° กันเสมอ"}, {"id": "M1-A3", "type": "วิเคราะห์", "q": "ในการระเบิดจากภาวะหยุดนิ่งเป็นสองชิ้น พลังงานจลน์ที่แต่ละชิ้นได้รับสัมพันธ์กับมวลอย่างไร", "choices": ["แปรผกผันกับมวล", "แปรผันตรงกับมวล", "เท่ากันทุกชิ้น", "ไม่เกี่ยวกับมวล"], "answer": 0, "explain": "โมเมนตัมเท่ากัน (m₁v₁=m₂v₂) แต่ K=p²/2m จึงแปรผกผันกับมวล ตัวเบาได้พลังงานมากกว่า"}, {"id": "M1-A4", "type": "วิเคราะห์", "q": "ในการชนอัดสปริง ณ จังหวะที่สปริงหดสั้นที่สุด วัตถุทั้งสองมีลักษณะการเคลื่อนที่อย่างไร", "choices": ["เคลื่อนที่ด้วยความเร็วเท่ากัน", "หยุดนิ่งทั้งคู่", "เคลื่อนที่สวนทางกัน", "ตัวหนึ่งหยุด อีกตัววิ่ง"], "answer": 0, "explain": "ณ จังหวะสปริงหดสั้นสุด ระยะห่างคงที่ชั่วขณะ วัตถุทั้งสองจึงมีความเร็วเท่ากัน = v_cm"}, {"id": "M1-A5", "type": "วิเคราะห์", "q": "นิวตรอนชนยืดหยุ่นกับนิวเคลียส เมื่อใดจึงถ่ายโอนพลังงานจลน์ได้สูงสุด", "choices": ["เมื่อมวลนิวเคลียสเท่ากับมวลนิวตรอน", "เมื่อมวลนิวเคลียสมากกว่ามาก", "เมื่อมวลนิวเคลียสน้อยกว่ามาก", "ไม่ขึ้นกับมวล"], "answer": 0, "explain": "f = 4mM/(m+M)² สูงสุดเมื่อ m = M ถ่ายโอนได้ 100% (เหตุผลที่ใช้น้ำหน่วงนิวตรอน)"}, {"id": "M1-EC1", "type": "คำนวณง่าย", "q": "วัตถุมวล 2 kg เคลื่อนที่ด้วยความเร็ว 5 m/s มีโมเมนตัมเท่าใด", "choices": ["10 kg·m/s", "7 kg·m/s", "2.5 kg·m/s", "25 kg·m/s"], "answer": 0, "explain": "p = mv = (2)(5) = 10 kg·m/s"}, {"id": "M1-EC2", "type": "คำนวณง่าย", "q": "ลูกบอลมวล 0.5 kg ถูกตีจากหยุดนิ่งจนมีความเร็ว 8 m/s การดลที่กระทำต่อลูกบอลเป็นเท่าใด", "choices": ["4 kg·m/s", "16 kg·m/s", "8 kg·m/s", "0.5 kg·m/s"], "answer": 0, "explain": "J = Δp = m(v−u) = 0.5(8−0) = 4 kg·m/s"}, {"id": "M1-EC3", "type": "คำนวณง่าย", "q": "วัตถุมวล 2 kg ความเร็ว 6 m/s ชนติดกับวัตถุมวล 4 kg ที่หยุดนิ่ง หลังชนติดกันเคลื่อนที่ด้วยความเร็วเท่าใด", "choices": ["2 m/s", "3 m/s", "4 m/s", "1 m/s"], "answer": 0, "explain": "m₁u₁=(m₁+m₂)V ⟹ V=(2×6)/(2+4)=12/6=2 m/s"}, {"id": "M1-MC1", "type": "คำนวณปานกลาง", "q": "วัตถุ A มวล 1 kg ความเร็ว 4 m/s ชนยืดหยุ่นตรง ๆ กับวัตถุ B มวล 1 kg ที่หยุดนิ่ง หลังชนวัตถุ A มีความเร็วเท่าใด", "choices": ["0 m/s", "4 m/s", "2 m/s", "8 m/s"], "answer": 0, "explain": "มวลเท่ากันชนยืดหยุ่นตัวหนึ่งนิ่ง จะแลกความเร็วกัน A หยุด (0 m/s) B วิ่งด้วย 4 m/s"}, {"id": "M1-MC2", "type": "คำนวณปานกลาง", "q": "วัตถุมวลรวมหยุดนิ่งเกิดระเบิดเป็น 2 ชิ้น ชิ้น A มวล 1 kg และชิ้น B มวล 3 kg ถ้า B เคลื่อนที่ด้วยความเร็ว 2 m/s ชิ้น A มีความเร็วเท่าใด", "choices": ["6 m/s", "2 m/s", "3 m/s", "1.5 m/s"], "answer": 0, "explain": "โมเมนตัมรวม=0 ⟹ m_A v_A = m_B v_B ⟹ (1)v_A=(3)(2) ⟹ v_A=6 m/s (ทิศตรงข้าม)"}]}, "2": {"title": "ของไหล", "questions": [{"id": "M2-K1", "type": "ความรู้ความจำ", "q": "หน่วยของความดันในระบบ SI คือข้อใด", "choices": ["ปาสคาล (Pa)", "นิวตัน (N)", "จูล (J)", "วัตต์ (W)"], "answer": 0, "explain": "P = F/A มีหน่วย N/m² = ปาสคาล (Pa)"}, {"id": "M2-K2", "type": "ความรู้ความจำ", "q": "ในของไหลนิ่ง จุดที่ระดับความลึกเท่ากันจะมีความดันเป็นอย่างไร", "choices": ["เท่ากันเสมอ", "ขึ้นกับรูปทรงภาชนะ", "ขึ้นกับปริมาตรของไหล", "แตกต่างกันตามตำแหน่ง"], "answer": 0, "explain": "ตามหลักพาสคาล ความดันในของไหลนิ่งขึ้นกับความลึกเท่านั้น จุดที่ลึกเท่ากันความดันเท่ากัน"}, {"id": "M2-K3", "type": "ความรู้ความจำ", "q": "แรงลอยตัวตามหลักอาร์คิมิดีสมีค่าเท่ากับข้อใด", "choices": ["น้ำหนักของของไหลที่ถูกแทนที่", "น้ำหนักของวัตถุ", "ความดันที่ก้นภาชนะ", "มวลของวัตถุ"], "answer": 0, "explain": "หลักอาร์คิมิดีส: แรงลอยตัว = น้ำหนักของของไหลที่ถูกวัตถุแทนที่ (F_B = ρVg)"}, {"id": "M2-K4", "type": "ความรู้ความจำ", "q": "สมการความต่อเนื่อง (A₁v₁ = A₂v₂) แสดงว่าเมื่อท่อแคบลง ความเร็วของไหลเป็นอย่างไร", "choices": ["เร็วขึ้น", "ช้าลง", "คงที่", "หยุดนิ่ง"], "answer": 0, "explain": "อัตราการไหล Q = Av คงที่ เมื่อ A ลดลง v ต้องเพิ่มขึ้น ของไหลจึงไหลเร็วขึ้นในท่อแคบ"}, {"id": "M2-K5", "type": "ความรู้ความจำ", "q": "เงื่อนไขของ 'ของไหลอุดมคติ' ที่ใช้สมการแบร์นูลลีได้ ไม่รวมข้อใด", "choices": ["มีความหนืดสูง", "ไหลราบเรียบไม่อลวน", "อัดตัวไม่ได้", "ไม่มีความหนืด"], "answer": 0, "explain": "ของไหลอุดมคติต้องไม่มีความหนืด ไหลราบเรียบ และอัดตัวไม่ได้ ดังนั้น 'มีความหนืดสูง' ไม่ใช่เงื่อนไข"}, {"id": "M2-A1", "type": "วิเคราะห์", "q": "วัตถุที่มีความหนาแน่นน้อยกว่าของไหลจะมีพฤติกรรมอย่างไร", "choices": ["ลอยขึ้นสู่ผิว", "แขวนลอยกลางของไหล", "จมลงก้นภาชนะ", "เคลื่อนที่ไม่แน่นอน"], "answer": 0, "explain": "ρ_วัตถุ < ρ_ของไหล → ลอย, เท่ากัน → แขวนลอย, มากกว่า → จม"}, {"id": "M2-A2", "type": "วิเคราะห์", "q": "ตามหลักแบร์นูลลี บริเวณที่ของไหลไหลเร็วขึ้นจะมีความดันเป็นอย่างไร", "choices": ["ความดันลดลง", "ความดันเพิ่มขึ้น", "ความดันคงที่", "ความดันเป็นศูนย์"], "answer": 0, "explain": "P + ½ρv² + ρgy คงที่ เมื่อ v เพิ่ม พจน์จลน์เพิ่ม P ต้องลดลง (หลักการปีกเครื่องบิน/เวนทูรี)"}, {"id": "M2-A3", "type": "วิเคราะห์", "q": "เมื่อวัตถุตกในของไหลจนแรงต้านเท่ากับน้ำหนัก ความเร็วของวัตถุจะเป็นอย่างไร", "choices": ["คงที่ (ความเร็วปลาย)", "เพิ่มขึ้นเรื่อย ๆ", "ลดลงจนหยุด", "เพิ่มขึ้นแบบทวีคูณ"], "answer": 0, "explain": "เมื่อแรงต้าน = แรงขับ (น้ำหนัก) แรงลัพธ์ = 0 ความเร่งเป็นศูนย์ วัตถุเคลื่อนที่ด้วยความเร็วปลายคงที่"}, {"id": "M2-A4", "type": "วิเคราะห์", "q": "ตามกฎปัวเซย ถ้าลดรัศมีท่อลงเหลือครึ่งหนึ่ง อัตราการไหลจะเปลี่ยนอย่างไร", "choices": ["ลดลง 16 เท่า", "ลดลง 2 เท่า", "ลดลง 4 เท่า", "ลดลง 8 เท่า"], "answer": 0, "explain": "Q ∝ r⁴ ดังนั้น (1/2)⁴ = 1/16 อัตราการไหลลดลง 16 เท่า"}, {"id": "M2-A5", "type": "วิเคราะห์", "q": "ความดันส่วนเกินภายในฟองสบู่ (มี 2 ผิว) เทียบกับหยดของเหลวทรงกลม (1 ผิว) ที่รัศมีเท่ากันเป็นอย่างไร", "choices": ["ฟองสบู่มากเป็น 2 เท่า", "เท่ากัน", "ฟองสบู่น้อยกว่าครึ่งหนึ่ง", "หยดมากกว่า 2 เท่า"], "answer": 0, "explain": "หยด ΔP=2γ/r (1 ผิว), ฟองสบู่ ΔP=4γ/r (2 ผิว) จึงมากเป็น 2 เท่า"}, {"id": "M2-EC1", "type": "คำนวณง่าย", "q": "จุดที่อยู่ลึก 2 m ใต้ผิวน้ำ มีความดันเกจเท่าใด (ρ_น้ำ=1000 kg/m³, g=10 m/s²)", "choices": ["20000 Pa", "2000 Pa", "10000 Pa", "200 Pa"], "answer": 0, "explain": "P = ρgh = (1000)(10)(2) = 20000 Pa"}, {"id": "M2-EC2", "type": "คำนวณง่าย", "q": "แรง 50 N กระทำตั้งฉากบนพื้นที่ 0.5 m² เกิดความดันเท่าใด", "choices": ["100 Pa", "25 Pa", "50 Pa", "250 Pa"], "answer": 0, "explain": "P = F/A = 50/0.5 = 100 Pa"}, {"id": "M2-EC3", "type": "คำนวณง่าย", "q": "วัตถุปริมาตร 0.002 m³ จมมิดในน้ำ มีแรงลอยตัวเท่าใด (ρ_น้ำ=1000 kg/m³, g=10 m/s²)", "choices": ["20 N", "2 N", "200 N", "0.02 N"], "answer": 0, "explain": "F_B = ρVg = (1000)(0.002)(10) = 20 N"}, {"id": "M2-MC1", "type": "คำนวณปานกลาง", "q": "น้ำไหลในท่อพื้นที่ 6 cm² ด้วยความเร็ว 2 m/s เมื่อไหลเข้าสู่ท่อพื้นที่ 2 cm² ความเร็วเป็นเท่าใด", "choices": ["6 m/s", "3 m/s", "2 m/s", "12 m/s"], "answer": 0, "explain": "A₁v₁ = A₂v₂ ⟹ v₂ = (6×2)/2 = 6 m/s"}, {"id": "M2-MC2", "type": "คำนวณปานกลาง", "q": "วัตถุความหนาแน่น 800 kg/m³ ลอยในน้ำ (ρ=1000 kg/m³) จะมีปริมาตรจมน้ำกี่เปอร์เซ็นต์ของปริมาตรทั้งก้อน", "choices": ["80%", "20%", "64%", "100%"], "answer": 0, "explain": "V_จม/V = ρ_วัตถุ/ρ_ของไหล = 800/1000 = 0.80 = 80%"}]}, "3": {"title": "แสง", "questions": [{"id": "M3-K1", "type": "ความรู้ความจำ", "q": "กฎการสะท้อนของแสงกล่าวว่าอย่างไร", "choices": ["มุมตกกระทบเท่ากับมุมสะท้อน", "มุมตกกระทบมากกว่ามุมสะท้อน", "มุมตกกระทบน้อยกว่ามุมสะท้อน", "มุมสะท้อนเป็นสองเท่าของมุมตกกระทบ"], "answer": 0, "explain": "กฎการสะท้อน: มุมตกกระทบ = มุมสะท้อน (วัดจากเส้นปกติ) และรังสีทั้งสองกับเส้นปกติอยู่ในระนาบเดียวกัน"}, {"id": "M3-K2", "type": "ความรู้ความจำ", "q": "ความยาวโฟกัสของกระจกโค้งสัมพันธ์กับรัศมีความโค้งอย่างไร", "choices": ["f = R/2", "f = R", "f = 2R", "f = R/4"], "answer": 0, "explain": "ความยาวโฟกัสของกระจกโค้ง = ครึ่งหนึ่งของรัศมีความโค้ง (f = R/2)"}, {"id": "M3-K3", "type": "ความรู้ความจำ", "q": "ดัชนีหักเหของตัวกลาง (n) นิยามด้วยข้อใด", "choices": ["n = c/v", "n = v/c", "n = c·v", "n = c−v"], "answer": 0, "explain": "ดัชนีหักเห n = c/v คืออัตราส่วนอัตราเร็วแสงในสุญญากาศต่ออัตราเร็วแสงในตัวกลาง"}, {"id": "M3-K4", "type": "ความรู้ความจำ", "q": "การสะท้อนกลับหมด (total internal reflection) เกิดขึ้นเมื่อใด", "choices": ["แสงจากตัวกลางหนาแน่นไปตัวกลางเบากว่า และมุมตกกระทบเกินมุมวิกฤต", "แสงจากตัวกลางเบาไปตัวกลางหนาแน่นกว่า", "มุมตกกระทบเป็นศูนย์", "แสงตกตั้งฉากกับผิว"], "answer": 0, "explain": "การสะท้อนกลับหมดเกิดเมื่อแสงเดินทางจากตัวกลางหนาแน่น (n มาก) ไปตัวกลางเบากว่า และมุมตกกระทบเกินมุมวิกฤต (หลักการเส้นใยนำแสง)"}, {"id": "M3-K5", "type": "ความรู้ความจำ", "q": "เลนส์เว้ามีคุณสมบัติอย่างไร", "choices": ["กระจายแสง ให้ภาพเสมือนย่อเสมอ", "รวมแสง ให้ภาพจริงเสมอ", "ให้ภาพจริงขยายเสมอ", "ไม่หักเหแสง"], "answer": 0, "explain": "เลนส์เว้า (f เป็นลบ) กระจายแสง ให้ภาพเสมือนหัวตั้งย่อเสมอ ส่วนเลนส์นูนรวมแสง"}, {"id": "M3-A1", "type": "วิเคราะห์", "q": "เมื่อแสงเดินทางจากอากาศเข้าสู่แก้ว (ตัวกลางหนาแน่นกว่า) รังสีหักเหจะเป็นอย่างไร", "choices": ["หักเหเข้าหาเส้นปกติ", "หักเหออกจากเส้นปกติ", "เดินทางเป็นเส้นตรงไม่หักเห", "สะท้อนกลับหมด"], "answer": 0, "explain": "เข้าสู่ตัวกลางที่ n มากกว่า แสงช้าลง หักเหเข้าหาเส้นปกติ (θ₂ < θ₁)"}, {"id": "M3-A2", "type": "วิเคราะห์", "q": "เมื่อแสงหักเหเข้าสู่ตัวกลางที่มีดัชนีหักเหมากขึ้น ความถี่และความยาวคลื่นเปลี่ยนอย่างไร", "choices": ["ความถี่คงที่ ความยาวคลื่นสั้นลง", "ความถี่ลดลง ความยาวคลื่นคงที่", "ทั้งสองเพิ่มขึ้น", "ทั้งสองลดลง"], "answer": 0, "explain": "ความถี่ถูกกำหนดโดยแหล่งกำเนิดจึงคงที่ แต่ v ลดลง ทำให้ λ = v/f สั้นลง n เท่า"}, {"id": "M3-A3", "type": "วิเคราะห์", "q": "วัตถุวางไว้ระหว่างโฟกัส (f) กับสองเท่าโฟกัส (2f) ของเลนส์นูน ภาพที่เกิดเป็นอย่างไร", "choices": ["จริง กลับหัว ขยาย", "จริง กลับหัว ย่อ", "เสมือน หัวตั้ง ขยาย", "เสมือน หัวตั้ง ย่อ"], "answer": 0, "explain": "วัตถุระหว่าง f กับ 2f ของเลนส์นูน เกิดภาพจริง กลับหัว ขยาย (อยู่ไกลกว่า 2f อีกด้าน)"}, {"id": "M3-A4", "type": "วิเคราะห์", "q": "เหตุใดปริซึมจึงแยกแสงขาวออกเป็นสเปกตรัมสีต่าง ๆ", "choices": ["ดัชนีหักเหขึ้นกับความยาวคลื่น สีม่วงหักเหมากกว่าสีแดง", "แสงแต่ละสีมีความเร็วเท่ากันในแก้ว", "ปริซึมสะท้อนแสงแต่ละสีต่างกัน", "แสงขาวประกอบด้วยสีเดียว"], "answer": 0, "explain": "การกระจายแสง (dispersion) เกิดเพราะดัชนีหักเหขึ้นกับความยาวคลื่น สีม่วง (λ สั้น) หักเหมากกว่าสีแดง จึงแยกเป็นสเปกตรัม"}, {"id": "M3-A5", "type": "วิเคราะห์", "q": "ในระบบเลนส์สองชิ้นวางเรียงกัน จะวิเคราะห์การเกิดภาพอย่างไร", "choices": ["ภาพจากเลนส์แรกเป็นวัตถุของเลนส์ที่สอง", "คิดเลนส์ทั้งสองเป็นเลนส์เดียวเสมอ", "ใช้เฉพาะเลนส์ที่มีโฟกัสสั้นกว่า", "ภาพเกิดที่กึ่งกลางระหว่างเลนส์"], "answer": 0, "explain": "ระบบเลนส์หลายชิ้น: ภาพจากเลนส์แรกทำหน้าที่เป็นวัตถุของเลนส์ถัดไป แก้ทีละเลนส์ตามลำดับ"}, {"id": "M3-EC1", "type": "คำนวณง่าย", "q": "กระจกโค้งมีรัศมีความโค้ง 20 cm มีความยาวโฟกัสเท่าใด", "choices": ["10 cm", "20 cm", "40 cm", "5 cm"], "answer": 0, "explain": "f = R/2 = 20/2 = 10 cm"}, {"id": "M3-EC2", "type": "คำนวณง่าย", "q": "แสงเดินทางในตัวกลางด้วยอัตราเร็ว 2×10⁸ m/s ดัชนีหักเหของตัวกลางเป็นเท่าใด (c = 3×10⁸ m/s)", "choices": ["1.5", "2.0", "0.67", "3.0"], "answer": 0, "explain": "n = c/v = (3×10⁸)/(2×10⁸) = 1.5"}, {"id": "M3-EC3", "type": "คำนวณง่าย", "q": "วัตถุอยู่ห่างเลนส์ 10 cm เกิดภาพจริงที่ระยะ 30 cm กำลังขยายของภาพเป็นเท่าใด", "choices": ["−3", "3", "−0.33", "1"], "answer": 0, "explain": "m = −s'/s = −30/10 = −3 (เครื่องหมายลบ = ภาพกลับหัว, ขนาด 3 เท่า)"}, {"id": "M3-MC1", "type": "คำนวณปานกลาง", "q": "เลนส์นูนความยาวโฟกัส 10 cm วางวัตถุห่าง 15 cm ภาพเกิดที่ระยะเท่าใด", "choices": ["30 cm", "25 cm", "6 cm", "150 cm"], "answer": 0, "explain": "1/f = 1/s + 1/s' ⟹ 1/s' = 1/10 − 1/15 = 1/30 ⟹ s' = 30 cm (ภาพจริง)"}, {"id": "M3-MC2", "type": "คำนวณปานกลาง", "q": "แสงเดินทางจากตัวกลาง n₁=2 ไปสู่ตัวกลาง n₂=1 มุมวิกฤตมีค่าเท่าใด", "choices": ["30°", "45°", "60°", "90°"], "answer": 0, "explain": "sinθc = n₂/n₁ = 1/2 ⟹ θc = arcsin(0.5) = 30°"}]}, "4": {"title": "ไฟฟ้าสถิต", "questions": [{"id": "M4-K1", "type": "ความรู้ความจำ", "q": "กฎของคูลอมบ์แสดงว่าแรงระหว่างประจุแปรผันอย่างไรกับระยะห่าง", "choices": ["แปรผกผันกับระยะกำลังสอง", "แปรผกผันกับระยะ", "แปรผันตรงกับระยะกำลังสอง", "ไม่ขึ้นกับระยะ"], "answer": 0, "explain": "กฎคูลอมบ์ F = kq₁q₂/r² แรงแปรผกผันกับระยะห่างยกกำลังสอง"}, {"id": "M4-K2", "type": "ความรู้ความจำ", "q": "สนามไฟฟ้าจากประจุบวกมีทิศทางอย่างไร", "choices": ["พุ่งออกจากประจุ", "พุ่งเข้าหาประจุ", "วนรอบประจุ", "ไม่มีทิศทาง"], "answer": 0, "explain": "สนามไฟฟ้าจากประจุบวกพุ่งออกจากประจุ ส่วนประจุลบสนามพุ่งเข้าหาประจุ"}, {"id": "M4-K3", "type": "ความรู้ความจำ", "q": "ศักย์ไฟฟ้า (V) เป็นปริมาณชนิดใด และรวมกันอย่างไร", "choices": ["สเกลาร์ รวมแบบผลบวกพีชคณิต", "เวกเตอร์ รวมแบบเวกเตอร์", "สเกลาร์ รวมแบบเวกเตอร์", "เวกเตอร์ รวมแบบพีชคณิต"], "answer": 0, "explain": "ศักย์ไฟฟ้าเป็นสเกลาร์ ศักย์ลัพธ์ = ผลบวกพีชคณิตของศักย์จากแต่ละประจุ (บวกลบตามเครื่องหมาย) ง่ายกว่าสนามที่ต้องรวมเวกเตอร์"}, {"id": "M4-K4", "type": "ความรู้ความจำ", "q": "กฎของเกาส์กล่าวว่าฟลักซ์ไฟฟ้าผ่านผิวปิดเท่ากับข้อใด", "choices": ["ประจุที่ถูกล้อม ÷ ε₀", "ประจุที่ถูกล้อม × ε₀", "สนามไฟฟ้า × พื้นที่", "ศักย์ไฟฟ้า ÷ ระยะ"], "answer": 0, "explain": "กฎเกาส์: Φ_E = ∮E·dA = Q_ล้อม/ε₀ ฟลักซ์ผ่านผิวปิดขึ้นกับประจุที่ถูกล้อมภายในเท่านั้น"}, {"id": "M4-K5", "type": "ความรู้ความจำ", "q": "สนามไฟฟ้าภายในตัวนำที่อยู่ในสมดุลไฟฟ้าสถิตมีค่าเท่าใด", "choices": ["ศูนย์", "kQ/r²", "V/d", "σ/ε₀"], "answer": 0, "explain": "ตัวนำในสมดุลไฟฟ้าสถิต สนามภายในเป็นศูนย์ ประจุส่วนเกินอยู่ที่ผิวเท่านั้น ทั้งก้อนเป็นพื้นผิวสมศักย์"}, {"id": "M4-A1", "type": "วิเคราะห์", "q": "ในการหาแรงลัพธ์บนประจุจากประจุอื่นหลายตัว ต้องใช้หลักการใด", "choices": ["ซ้อนทับแบบเวกเตอร์ (คิดทีละคู่แล้วรวม)", "บวกขนาดแรงทางพีชคณิต", "ใช้เฉพาะประจุที่ใกล้ที่สุด", "หาค่าเฉลี่ยของแรง"], "answer": 0, "explain": "หลักการซ้อนทับ: แรงลัพธ์ = ผลรวมเวกเตอร์ของแรงจากประจุแต่ละตัว คิดทีละคู่แล้วรวมแบบเวกเตอร์ (แยกแกน x, y)"}, {"id": "M4-A2", "type": "วิเคราะห์", "q": "ประจุ +q เคลื่อนที่บนพื้นผิวสมศักย์ (equipotential surface) งานที่ทำเป็นเท่าใด", "choices": ["ศูนย์ เพราะ ΔV = 0", "เท่ากับ qV", "มากที่สุด", "ขึ้นกับความยาวเส้นทาง"], "answer": 0, "explain": "พื้นผิวสมศักย์มีศักย์เท่ากันทุกจุด (ΔV=0) งาน W = qΔV = 0 การเคลื่อนประจุบนพื้นผิวนี้จึงไม่ต้องใช้งาน"}, {"id": "M4-A3", "type": "วิเคราะห์", "q": "เหตุใดการหาศักย์ไฟฟ้าที่จุดศูนย์กลางของลวดโค้ง (ทุกจุดห่างเท่ากัน = R) จึงง่ายกว่าการหาสนามไฟฟ้า", "choices": ["ศักย์เป็นสเกลาร์ รวมตรง V = kQ/R แต่สนามต้องอินทิเกรตแบบเวกเตอร์", "สนามเป็นสเกลาร์ ศักย์เป็นเวกเตอร์", "ทั้งสองหายากเท่ากัน", "ศักย์ที่จุดศูนย์กลางเป็นศูนย์"], "answer": 0, "explain": "ทุกจุดบนลวดห่างจากศูนย์กลาง = R เท่ากัน ศักย์เป็นสเกลาร์รวมตรงได้ V = kQ_รวม/R แต่สนามเป็นเวกเตอร์ต้องแยกองค์ประกอบและอินทิเกรต"}, {"id": "M4-A4", "type": "วิเคราะห์", "q": "ประจุลบวางในสนามไฟฟ้าสม่ำเสมอ จะถูกแรงในทิศใด", "choices": ["ทิศตรงข้ามกับสนามไฟฟ้า", "ทิศเดียวกับสนามไฟฟ้า", "ตั้งฉากกับสนาม", "ไม่มีแรงกระทำ"], "answer": 0, "explain": "F = qE เมื่อ q เป็นลบ แรงมีทิศตรงข้ามกับสนาม E (ประจุบวกถูกแรงตามทิศสนาม ประจุลบทวนทิศ)"}, {"id": "M4-A5", "type": "วิเคราะห์", "q": "สนามไฟฟ้าจากแผ่นประจุอนันต์ (infinite sheet) มีลักษณะพิเศษอย่างไร", "choices": ["คงที่ ไม่ขึ้นกับระยะห่างจากแผ่น", "แปรผกผันกับระยะกำลังสอง", "แปรผกผันกับระยะ", "เพิ่มขึ้นตามระยะ"], "answer": 0, "explain": "จากกฎเกาส์ สนามจากแผ่นประจุอนันต์ E = σ/2ε₀ มีค่าคงที่ ไม่ขึ้นกับระยะห่างจากแผ่น"}, {"id": "M4-EC1", "type": "คำนวณง่าย", "q": "ประจุ 1 μC สองตัววางห่างกัน 1 m มีแรงระหว่างกันเท่าใด (k = 9×10⁹ N·m²/C²)", "choices": ["9×10⁻³ N", "9×10⁹ N", "9×10⁻⁶ N", "9×10³ N"], "answer": 0, "explain": "F = kq₁q₂/r² = (9×10⁹)(10⁻⁶)(10⁻⁶)/1² = 9×10⁻³ N"}, {"id": "M4-EC2", "type": "คำนวณง่าย", "q": "แผ่นตัวนำคู่ขนานห่างกัน 0.5 m ต่อความต่างศักย์ 100 V สนามไฟฟ้าระหว่างแผ่นเป็นเท่าใด", "choices": ["200 V/m", "50 V/m", "100 V/m", "500 V/m"], "answer": 0, "explain": "สนามสม่ำเสมอ E = V/d = 100/0.5 = 200 V/m"}, {"id": "M4-EC3", "type": "คำนวณง่าย", "q": "ประจุจุด 2 μC สร้างสนามไฟฟ้าที่ระยะ 3 m มีค่าเท่าใด (k = 9×10⁹ N·m²/C²)", "choices": ["2000 N/C", "6000 N/C", "666 N/C", "18000 N/C"], "answer": 0, "explain": "E = kQ/r² = (9×10⁹)(2×10⁻⁶)/3² = (1.8×10⁴)/9 = 2000 N/C"}, {"id": "M4-MC1", "type": "คำนวณปานกลาง", "q": "ประจุ 2 μC วางในสนามไฟฟ้าสม่ำเสมอ 500 N/C จะถูกแรงกระทำเท่าใด", "choices": ["1×10⁻³ N", "2.5×10⁻³ N", "250 N", "1000 N"], "answer": 0, "explain": "F = qE = (2×10⁻⁶)(500) = 1×10⁻³ N"}, {"id": "M4-MC2", "type": "คำนวณปานกลาง", "q": "ประจุ +4Q วางที่ x=0 และ +Q วางที่ x=3 m บนแกน x จุดที่สนามไฟฟ้าลัพธ์เป็นศูนย์อยู่ที่ตำแหน่งใด", "choices": ["x = 2 m", "x = 1.5 m", "x = 1 m", "x = 2.5 m"], "answer": 0, "explain": "สนามหักล้างกันเมื่อ k(4Q)/x² = kQ/(3−x)² ⟹ 2/x = 1/(3−x) ⟹ 2(3−x) = x ⟹ x = 2 m (ระหว่างประจุ ใกล้ประจุที่เล็กกว่า)"}]}, "7": {"title": "การเคลื่อนที่", "questions": [{"id": "M7-K1", "type": "ความรู้ความจำ", "q": "สมการการเคลื่อนที่แนวตรง (เช่น v = u + at) ใช้ได้ในเงื่อนไขใด", "choices": ["ความเร่งคงตัวเท่านั้น", "ความเร่งเปลี่ยนแปลงได้", "ความเร็วคงที่เท่านั้น", "ทุกกรณีเสมอ"], "answer": 0, "explain": "สมการการเคลื่อนที่ทั้ง 4 สมการใช้ได้เฉพาะเมื่อความเร่งคงตัวเท่านั้น"}, {"id": "M7-K2", "type": "ความรู้ความจำ", "q": "ในกราฟความเร็ว–เวลา (v–t) พื้นที่ใต้กราฟแทนปริมาณใด", "choices": ["การกระจัด", "ความเร่ง", "ความเร็ว", "แรง"], "answer": 0, "explain": "กราฟ v–t: ความชัน = ความเร่ง, พื้นที่ใต้กราฟ = การกระจัด"}, {"id": "M7-K3", "type": "ความรู้ความจำ", "q": "วัตถุที่ถูกขว้างขึ้นในแนวดิ่ง ณ จุดสูงสุด ความเร็วและความเร่งเป็นอย่างไร", "choices": ["ความเร็วเป็นศูนย์ ความเร่งเท่ากับ g", "ทั้งความเร็วและความเร่งเป็นศูนย์", "ความเร็วเท่ากับ g ความเร่งเป็นศูนย์", "ทั้งสองเท่ากับ g"], "answer": 0, "explain": "ที่จุดสูงสุด v = 0 แต่ความเร่ง a = g ทิศลงยังคงอยู่เสมอ"}, {"id": "M7-K4", "type": "ความรู้ความจำ", "q": "ในการเคลื่อนที่แบบโพรเจกไทล์ การเคลื่อนที่แนวราบมีลักษณะอย่างไร", "choices": ["ความเร็วคงที่ (ไม่มีความเร่ง)", "ความเร่งเท่ากับ g", "ความเร็วลดลงเรื่อย ๆ", "หยุดที่จุดสูงสุด"], "answer": 0, "explain": "แกนราบไม่มีแรงกระทำ (ไม่คิดแรงต้านอากาศ) ความเร็วแนวราบจึงคงที่ ส่วนแกนดิ่งมีความเร่ง g"}, {"id": "M7-K5", "type": "ความรู้ความจำ", "q": "ความเร่งสู่ศูนย์กลางในการเคลื่อนที่แบบวงกลมมีทิศทางอย่างไร", "choices": ["ชี้เข้าหาศูนย์กลางเสมอ", "ชี้ออกจากศูนย์กลาง", "สัมผัสเส้นรอบวง", "ในทิศการเคลื่อนที่"], "answer": 0, "explain": "ความเร่งสู่ศูนย์กลาง a_c = v²/r ชี้เข้าหาศูนย์กลางเสมอ ตั้งฉากกับความเร็ว"}, {"id": "M7-A1", "type": "วิเคราะห์", "q": "ในการเคลื่อนที่แบบโพรเจกไทล์ ปริมาณใดเชื่อมโยงการเคลื่อนที่แกนราบและแกนดิ่งเข้าด้วยกัน", "choices": ["เวลา t", "ความเร็วต้น u", "มุมยิง θ", "ความเร่ง g"], "answer": 0, "explain": "สองแกนแยกอิสระต่อกันโดยสมบูรณ์ แต่ใช้เวลา t เดียวกัน จึงเชื่อมสองแกนด้วยเวลา"}, {"id": "M7-A2", "type": "วิเคราะห์", "q": "มุมยิงโพรเจกไทล์คู่ใดให้พิสัย (range) เท่ากันบนพื้นราบ", "choices": ["30° กับ 60°", "30° กับ 45°", "45° กับ 60°", "20° กับ 80°"], "answer": 0, "explain": "R = u²sin2θ/g พิสัยเท่ากันที่มุมเสริม (รวมกันได้ 90°) เช่น 30° กับ 60°"}, {"id": "M7-A3", "type": "วิเคราะห์", "q": "แรงสู่ศูนย์กลางในการเคลื่อนที่วงกลมคือแรงชนิดใด", "choices": ["แรงลัพธ์ที่ชี้เข้าศูนย์กลาง (ไม่ใช่แรงชนิดใหม่)", "แรงพิเศษที่เกิดจากการหมุน", "แรงที่ชี้ออกจากศูนย์กลาง", "แรงเสียดทานเท่านั้น"], "answer": 0, "explain": "แรงสู่ศูนย์กลางคือแรงลัพธ์ที่ชี้เข้าศูนย์กลาง อาจเป็นแรงตึงเชือก แรงเสียดทาน แรงโน้มถ่วง หรือแรงตั้งฉาก ไม่ใช่แรงเพิ่มพิเศษ"}, {"id": "M7-A4", "type": "วิเคราะห์", "q": "หลอดไฟตกจากเพดานลิฟต์ที่กำลังเร่งขึ้นด้วยความเร่ง a เมื่อมองในกรอบของลิฟต์ หลอดไฟจะตกด้วยความเร่งเท่าใด", "choices": ["g + a", "g − a", "g", "a"], "answer": 0, "explain": "ในกรอบลิฟต์ที่เร่งขึ้น ความเร่งประสิทธิผล g_eff = g + a หลอดไฟจึงตกเร็วกว่าปกติ"}, {"id": "M7-A5", "type": "วิเคราะห์", "q": "การเคลื่อนที่แบบวงกลมสม่ำเสมอ (อัตราเร็วคงที่) เหตุใดจึงยังถือว่ามีความเร่ง", "choices": ["เพราะทิศของความเร็วเปลี่ยนตลอดเวลา", "เพราะอัตราเร็วเพิ่มขึ้น", "เพราะระยะทางเพิ่มขึ้น", "ไม่มีความเร่งจริง"], "answer": 0, "explain": "ความเร็วเป็นเวกเตอร์ แม้ขนาด (อัตราเร็ว) คงที่ แต่ทิศเปลี่ยนตลอด จึงมีความเร่ง (สู่ศูนย์กลาง)"}, {"id": "M7-EC1", "type": "คำนวณง่าย", "q": "รถออกตัวจากหยุดนิ่งด้วยความเร่งคงตัว 2 m/s² หลังจาก 5 วินาที มีความเร็วเท่าใด", "choices": ["10 m/s", "7 m/s", "2.5 m/s", "25 m/s"], "answer": 0, "explain": "v = u + at = 0 + (2)(5) = 10 m/s"}, {"id": "M7-EC2", "type": "คำนวณง่าย", "q": "ปล่อยวัตถุตกอิสระจากหยุดนิ่ง หลัง 3 วินาที วัตถุตกได้ระยะทางเท่าใด (g = 10 m/s²)", "choices": ["45 m", "30 m", "90 m", "15 m"], "answer": 0, "explain": "s = ½gt² = ½(10)(3²) = ½(10)(9) = 45 m"}, {"id": "M7-EC3", "type": "คำนวณง่าย", "q": "วัตถุเคลื่อนที่เป็นวงกลมรัศมี 2 m ด้วยอัตราเร็ว 4 m/s มีความเร่งสู่ศูนย์กลางเท่าใด", "choices": ["8 m/s²", "2 m/s²", "16 m/s²", "4 m/s²"], "answer": 0, "explain": "a_c = v²/r = 4²/2 = 16/2 = 8 m/s²"}, {"id": "M7-MC1", "type": "คำนวณปานกลาง", "q": "ยิงวัตถุด้วยความเร็วต้น 20 m/s ทำมุม 45° กับแนวราบ พิสัยบนพื้นราบเป็นเท่าใด (g = 10 m/s²)", "choices": ["40 m", "20 m", "80 m", "34.6 m"], "answer": 0, "explain": "R = u²sin2θ/g = (20²)(sin90°)/10 = 400(1)/10 = 40 m (มุม 45° ให้พิสัยไกลสุด)"}, {"id": "M7-MC2", "type": "คำนวณปานกลาง", "q": "รถออกจากหยุดนิ่งด้วยความเร่งคงตัว 4 m/s² จนมีความเร็ว 20 m/s รถเคลื่อนที่ได้ระยะทางเท่าใด", "choices": ["50 m", "100 m", "25 m", "80 m"], "answer": 0, "explain": "v² = u² + 2as ⟹ s = (v²−u²)/2a = (20²−0)/(2×4) = 400/8 = 50 m"}]}, "9": {"title": "แรงและสมดุล", "questions": [{"id": "M9-K1", "type": "ความรู้ความจำ", "q": "กฎการเคลื่อนที่ข้อที่ 2 ของนิวตันเขียนเป็นสมการได้อย่างไร", "choices": ["ΣF = ma", "ΣF = 0", "F = μN", "W = Fs"], "answer": 0, "explain": "กฎข้อ 2: แรงลัพธ์ทำให้เกิดความเร่ง ΣF = ma"}, {"id": "M9-K2", "type": "ความรู้ความจำ", "q": "แรงกิริยาและแรงปฏิกิริยา (กฎข้อ 3) มีลักษณะอย่างไร", "choices": ["ขนาดเท่ากัน ทิศตรงข้าม กระทำต่อวัตถุคนละก้อน", "ขนาดเท่ากัน ทิศเดียวกัน", "กระทำต่อวัตถุก้อนเดียวกัน", "หักล้างกันเสมอ"], "answer": 0, "explain": "แรงกิริยา-ปฏิกิริยาเกิดเป็นคู่ ขนาดเท่ากัน ทิศตรงข้าม แต่กระทำต่อวัตถุคนละก้อน จึงไม่หักล้างกัน"}, {"id": "M9-K3", "type": "ความรู้ความจำ", "q": "เงื่อนไขของสมดุลสมบูรณ์ของวัตถุแข็งเกร็งคือข้อใด", "choices": ["ΣF = 0 และ Στ = 0", "ΣF = 0 เท่านั้น", "Στ = 0 เท่านั้น", "ΣF = ma"], "answer": 0, "explain": "สมดุลสมบูรณ์ต้องมีทั้งแรงลัพธ์เป็นศูนย์ (ΣF=0) และทอร์กลัพธ์เป็นศูนย์ (Στ=0)"}, {"id": "M9-K4", "type": "ความรู้ความจำ", "q": "ทอร์ก (โมเมนต์ของแรง) นิยามด้วยข้อใด", "choices": ["แรง × ระยะตั้งฉากจากแกนหมุนถึงแนวแรง", "แรง × มวล", "แรง × เวลา", "แรง ÷ พื้นที่"], "answer": 0, "explain": "ทอร์ก τ = rF sinφ = แรง × แขนโมเมนต์ (ระยะตั้งฉากจากแกนหมุนถึงแนวแรง)"}, {"id": "M9-K5", "type": "ความรู้ความจำ", "q": "แรงเสียดทานจลน์ (kinetic friction) มีค่าเป็นอย่างไร", "choices": ["f_k = μ_k N คงที่", "ปรับค่าได้ตามแรงที่ผลัก", "เท่ากับศูนย์เสมอ", "มากกว่าแรงเสียดทานสถิตสูงสุดเสมอ"], "answer": 0, "explain": "แรงเสียดทานจลน์ f_k = μ_k N มีค่าคงที่ (มักน้อยกว่าเสียดทานสถิตสูงสุด) ต่างจากเสียดทานสถิตที่ปรับค่าได้"}, {"id": "M9-A1", "type": "วิเคราะห์", "q": "วัตถุวางนิ่งบนโต๊ะ ถูกผลักด้วยแรงเบา ๆ แต่ยังไม่ขยับ แรงเสียดทานสถิตขณะนั้นมีค่าเท่าใด", "choices": ["เท่ากับแรงที่ผลักพอดี", "เท่ากับ μ_s N เสมอ", "เป็นศูนย์", "มากกว่าแรงที่ผลัก"], "answer": 0, "explain": "แรงเสียดทานสถิตปรับตัวได้ เท่ากับแรงที่พยายามผลักพอดีตราบที่ยังไม่ไถล จนถึงค่าสูงสุด μ_s N"}, {"id": "M9-A2", "type": "วิเคราะห์", "q": "มุมวิกฤตที่วัตถุเริ่มไถลลงพื้นเอียงขึ้นกับปริมาณใด", "choices": ["สัมประสิทธิ์เสียดทานสถิตเท่านั้น (ไม่ขึ้นกับมวล)", "มวลของวัตถุ", "น้ำหนักของวัตถุ", "พื้นที่สัมผัส"], "answer": 0, "explain": "มุมวิกฤต tanθ = μ_s ขึ้นกับสัมประสิทธิ์เสียดทานเท่านั้น ไม่ขึ้นกับมวล"}, {"id": "M9-A3", "type": "วิเคราะห์", "q": "ในการแก้โจทย์วัตถุบนพื้นเอียง ควรเลือกวางแกนพิกัดอย่างไรจึงง่ายที่สุด", "choices": ["วางแกนขนานและตั้งฉากกับพื้นเอียง", "วางแกนราบและดิ่งปกติ", "วางแกนตามแนวดิ่งเท่านั้น", "ไม่ต้องเลือกแกน"], "answer": 0, "explain": "วางแกนขนานและตั้งฉากกับพื้นเอียง ทำให้ความเร่งอยู่ในแกนเดียว แก้สมการง่ายกว่าใช้แกนราบ-ดิ่ง"}, {"id": "M9-A4", "type": "วิเคราะห์", "q": "ในการหาแรงตึงเชือกที่ไม่รู้ค่าจากสมดุลทอร์ก ควรเลือกแกนหมุนอย่างไร", "choices": ["เลือกจุดที่แรงไม่รู้ค่าอื่นผ่าน เพื่อตัดตัวแปรนั้นออก", "เลือกกึ่งกลางวัตถุเสมอ", "เลือกจุดที่ไกลที่สุด", "เลือกจุดที่มีแรงมากที่สุด"], "answer": 0, "explain": "เลือกแกนหมุนที่แรงไม่รู้ค่าผ่าน ทำให้ทอร์กของแรงนั้นเป็นศูนย์ (แขนโมเมนต์=0) เหลือตัวแปรน้อยลง แก้ง่ายขึ้น"}, {"id": "M9-A5", "type": "วิเคราะห์", "q": "คนยืนในลิฟต์ที่กำลังเร่งขึ้น น้ำหนักปรากฏ (แรงที่พื้นดัน) เป็นอย่างไรเทียบกับตอนลิฟต์อยู่นิ่ง", "choices": ["มากกว่าปกติ", "น้อยกว่าปกติ", "เท่าเดิม", "เป็นศูนย์"], "answer": 0, "explain": "ลิฟต์เร่งขึ้น N = m(g+a) > mg น้ำหนักปรากฏมากกว่าปกติ (รู้สึกหนักขึ้น)"}, {"id": "M9-EC1", "type": "คำนวณง่าย", "q": "แรงลัพธ์ 12 N กระทำต่อวัตถุมวล 3 kg วัตถุมีความเร่งเท่าใด", "choices": ["4 m/s²", "36 m/s²", "0.25 m/s²", "9 m/s²"], "answer": 0, "explain": "a = ΣF/m = 12/3 = 4 m/s²"}, {"id": "M9-EC2", "type": "คำนวณง่าย", "q": "แรง 10 N ลากวัตถุไปตามแนวราบเป็นระยะ 5 m (แรงขนานการเคลื่อนที่) ทำงานได้เท่าใด", "choices": ["50 J", "2 J", "15 J", "0 J"], "answer": 0, "explain": "W = Fs cosθ = (10)(5)(cos0°) = 50 J"}, {"id": "M9-EC3", "type": "คำนวณง่าย", "q": "วัตถุมวล 2 kg วางบนพื้นเอียง 60° แรงตั้งฉาก (N) มีค่าเท่าใด (g = 10 m/s²)", "choices": ["10 N", "20 N", "17.3 N", "5 N"], "answer": 0, "explain": "N = mg cosθ = (2)(10)(cos60°) = 20(0.5) = 10 N"}, {"id": "M9-MC1", "type": "คำนวณปานกลาง", "q": "คนมวล 50 kg ยืนในลิฟต์ที่เร่งขึ้นด้วยความเร่ง 2 m/s² แรงที่พื้นลิฟต์ดันคน (น้ำหนักปรากฏ) เป็นเท่าใด (g = 10 m/s²)", "choices": ["600 N", "500 N", "400 N", "100 N"], "answer": 0, "explain": "N = m(g+a) = 50(10+2) = 50×12 = 600 N"}, {"id": "M9-MC2", "type": "คำนวณปานกลาง", "q": "คานเบายาว 4 m ตรึงที่ปลายซ้าย (A) มีน้ำหนัก 100 N แขวนห่างจาก A เป็นระยะ 1 m ต้องใช้แรงพยุงที่ปลายขวา (B) เท่าใดจึงสมดุล", "choices": ["25 N", "100 N", "50 N", "75 N"], "answer": 0, "explain": "Στ รอบจุด A = 0: F_B×4 = 100×1 ⟹ F_B = 100/4 = 25 N"}]}, "10": {"title": "ความโน้มถ่วง", "questions": [{"id": "M10-K1", "type": "ความรู้ความจำ", "q": "กฎแรงโน้มถ่วงสากลของนิวตันเขียนได้อย่างไร", "choices": ["F = Gm₁m₂/r²", "F = Gm₁m₂/r", "F = Gm₁m₂r²", "F = G(m₁+m₂)/r²"], "answer": 0, "explain": "กฎแรงโน้มถ่วงสากล F = Gm₁m₂/r² แรงดึงดูดแปรผกผันกับระยะกำลังสอง"}, {"id": "M10-K2", "type": "ความรู้ความจำ", "q": "แรงโน้มถ่วงระหว่างมวลสองก้อนมีทิศทางอย่างไร", "choices": ["ดึงดูดกันตามแนวเส้นเชื่อมมวลเสมอ", "ผลักกันเสมอ", "ดึงดูดหรือผลักขึ้นกับชนิดมวล", "ตั้งฉากกับเส้นเชื่อมมวล"], "answer": 0, "explain": "แรงโน้มถ่วงเป็นแรงดึงดูดอย่างเดียวเสมอ กระทำตามแนวเส้นเชื่อมมวลทั้งสอง (ต่างจากคูลอมบ์ที่มีทั้งดึงดูดและผลัก)"}, {"id": "M10-K3", "type": "ความรู้ความจำ", "q": "ข้อใดกล่าวถูกต้องเกี่ยวกับมวลและน้ำหนัก", "choices": ["มวลคงที่ทุกที่ แต่น้ำหนักเปลี่ยนตามสนามโน้มถ่วง", "ทั้งมวลและน้ำหนักคงที่ทุกที่", "น้ำหนักคงที่ แต่มวลเปลี่ยน", "ทั้งสองเปลี่ยนตามตำแหน่ง"], "answer": 0, "explain": "มวลเป็นสมบัติเฉพาะของวัตถุคงที่ทุกที่ ส่วนน้ำหนัก W = mg เปลี่ยนตามค่า g (เช่น บนดวงจันทร์เบากว่า)"}, {"id": "M10-K4", "type": "ความรู้ความจำ", "q": "กฎข้อที่ 3 ของเคปเลอร์กล่าวว่าอย่างไร", "choices": ["T² แปรผันตรงกับ r³", "T แปรผันตรงกับ r", "T² แปรผันตรงกับ r²", "T แปรผกผันกับ r³"], "answer": 0, "explain": "กฎข้อ 3 ของเคปเลอร์: T² ∝ r³ คาบยกกำลังสองแปรผันตรงกับรัศมี(กึ่งแกนเอก)ยกกำลังสาม"}, {"id": "M10-K5", "type": "ความรู้ความจำ", "q": "พลังงานศักย์โน้มถ่วง U = −GMm/r มีเครื่องหมายลบเพราะเหตุใด", "choices": ["อ้างอิงพลังงานศักย์เป็นศูนย์ที่ระยะอนันต์", "เป็นความผิดพลาดของสูตร", "พลังงานจริงติดลบ", "แรงโน้มถ่วงเป็นลบ"], "answer": 0, "explain": "กำหนดจุดอ้างอิง U=0 ที่ระยะอนันต์ เมื่อวัตถุเข้าใกล้กันพลังงานศักย์ลดลงต่ำกว่าศูนย์ จึงเป็นลบ (ระบบถูกผูกไว้)"}, {"id": "M10-A1", "type": "วิเคราะห์", "q": "ถ้าระยะห่างระหว่างมวลสองก้อนเพิ่มเป็น 2 เท่า แรงโน้มถ่วงระหว่างมวลจะเปลี่ยนอย่างไร", "choices": ["ลดลงเหลือ 1/4 เท่า", "ลดลงเหลือครึ่งหนึ่ง", "เพิ่มเป็น 2 เท่า", "เพิ่มเป็น 4 เท่า"], "answer": 0, "explain": "F ∝ 1/r² เมื่อ r เพิ่มเป็น 2 เท่า F ลดลงเหลือ (1/2)² = 1/4 เท่า"}, {"id": "M10-A2", "type": "วิเคราะห์", "q": "ตามกฎข้อ 2 ของเคปเลอร์ ดาวเคราะห์เคลื่อนที่เร็วที่สุดเมื่ออยู่ตำแหน่งใดของวงโคจร", "choices": ["ใกล้ดวงอาทิตย์มากที่สุด", "ไกลดวงอาทิตย์มากที่สุด", "ที่ตำแหน่งใดก็เร็วเท่ากัน", "ที่กึ่งกลางวงรี"], "answer": 0, "explain": "กฎข้อ 2: เส้นรัศมีกวาดพื้นที่เท่ากันในเวลาเท่ากัน ดาวเคราะห์จึงเคลื่อนที่เร็วที่สุดเมื่ออยู่ใกล้ดวงอาทิตย์ (perihelion)"}, {"id": "M10-A3", "type": "วิเคราะห์", "q": "ความเร็วหลุดพ้น (escape velocity) สัมพันธ์กับความเร็ววงโคจรกลมที่รัศมีเดียวกันอย่างไร", "choices": ["v_esc = √2 เท่าของความเร็ววงโคจร", "v_esc = 2 เท่าของความเร็ววงโคจร", "v_esc เท่ากับความเร็ววงโคจร", "v_esc = ครึ่งหนึ่งของความเร็ววงโคจร"], "answer": 0, "explain": "v_โคจร = √(GM/r), v_esc = √(2GM/r) = √2 · v_โคจร เพิ่มความเร็ว √2 เท่าก็หลุดพ้นได้"}, {"id": "M10-A4", "type": "วิเคราะห์", "q": "พลังงานรวม (E = KE + U) ของดาวเทียมในวงโคจรกลมมีค่าเป็นอย่างไร และหมายความว่าอย่างไร", "choices": ["เป็นลบ แสดงว่าถูกผูกไว้ในวงโคจร", "เป็นบวก แสดงว่าจะหลุดออก", "เป็นศูนย์เสมอ", "เป็นบวก แต่ยังโคจรอยู่"], "answer": 0, "explain": "E = −GMm/2r เป็นลบ แสดงว่าดาวเทียมถูกผูกไว้ในสนามโน้มถ่วง ถ้า E ≥ 0 จึงจะหลุดออกสู่อนันต์"}, {"id": "M10-A5", "type": "วิเคราะห์", "q": "เหตุใดค่า g ที่วัดได้บริเวณเส้นศูนย์สูตรของดาวที่หมุนรอบตัวเองจึงน้อยกว่าที่ขั้ว", "choices": ["แรงหนีศูนย์กลางจากการหมุนหักลบกับแรงโน้มถ่วง", "มวลที่เส้นศูนย์สูตรน้อยกว่า", "ระยะจากศูนย์กลางเท่ากันทุกจุด", "สนามโน้มถ่วงชี้ออก"], "answer": 0, "explain": "ที่เส้นศูนย์สูตรวัตถุหมุนเป็นวงกลม ต้องใช้แรงสู่ศูนย์กลาง ทำให้ g ที่วัดได้ = g₀ − ω²R น้อยลง ส่วนที่ขั้วไม่มีผลนี้"}, {"id": "M10-EC1", "type": "คำนวณง่าย", "q": "วัตถุมวล 10 kg อยู่บนดวงจันทร์ที่มี g = 1.6 m/s² มีน้ำหนักเท่าใด", "choices": ["16 N", "98 N", "10 N", "6.25 N"], "answer": 0, "explain": "W = mg = (10)(1.6) = 16 N"}, {"id": "M10-EC2", "type": "คำนวณง่าย", "q": "ถ้าเคลื่อนที่ออกไปจนมีระยะห่างจากศูนย์กลางดาวเป็น 2 เท่าของเดิม ค่าสนามโน้มถ่วง g จะเป็นเท่าใดเทียบกับเดิม", "choices": ["1/4 เท่า", "1/2 เท่า", "2 เท่า", "4 เท่า"], "answer": 0, "explain": "g = GM/r² ∝ 1/r² เมื่อ r เป็น 2 เท่า g เป็น 1/4 เท่า"}, {"id": "M10-EC3", "type": "คำนวณง่าย", "q": "มวลสองก้อนดึงดูดกันด้วยแรง F ถ้าลดระยะห่างลงเหลือครึ่งหนึ่ง แรงจะเปลี่ยนเป็นเท่าใด", "choices": ["4F", "2F", "F/2", "F/4"], "answer": 0, "explain": "F ∝ 1/r² เมื่อ r ลดเหลือครึ่ง F เพิ่มเป็น (2)² = 4 เท่า = 4F"}, {"id": "M10-MC1", "type": "คำนวณปานกลาง", "q": "ดาวเทียมโคจรกลมด้วยความเร็ว 8 km/s ต้องเพิ่มความเร็วเป็นเท่าใดจึงจะหลุดพ้นจากสนามโน้มถ่วงที่รัศมีนั้น", "choices": ["≈ 11.3 km/s", "16 km/s", "8 km/s", "≈ 5.7 km/s"], "answer": 0, "explain": "v_esc = √2 · v_โคจร = √2 × 8 ≈ 11.3 km/s"}, {"id": "M10-MC2", "type": "คำนวณปานกลาง", "q": "ดาวเคราะห์ A โคจรรัศมี r มีคาบ 1 ปี ดาวเคราะห์ B โคจรรัศมี 4r รอบดาวฤกษ์เดียวกัน มีคาบเท่าใด", "choices": ["8 ปี", "4 ปี", "16 ปี", "2 ปี"], "answer": 0, "explain": "T² ∝ r³ ⟹ (T_B/T_A)² = (4r/r)³ = 64 ⟹ T_B/T_A = 8 ⟹ T_B = 8 ปี"}]}, "12": {"title": "คลื่น เสียง และ SHM", "questions": [{"id": "M12-K1", "type": "ความรู้ความจำ", "q": "การเคลื่อนที่แบบฮาร์มอนิกอย่างง่าย (SHM) มีลักษณะของแรงคืนตัวอย่างไร", "choices": ["แรงคืนตัวแปรผันตรงกับการกระจัด และมีทิศตรงข้ามกับการกระจัด", "แรงคืนตัวคงที่เสมอ", "แรงคืนตัวแปรผันตรงกับความเร็ว", "ไม่มีแรงคืนตัว"], "answer": 0, "explain": "SHM: แรงคืนตัว F = −kx แปรผันตรงกับการกระจัดและมีทิศตรงข้ามเสมอ (ชี้กลับสู่ตำแหน่งสมดุล)"}, {"id": "M12-K2", "type": "ความรู้ความจำ", "q": "ความสัมพันธ์ระหว่างอัตราเร็วคลื่น (v) ความถี่ (f) และความยาวคลื่น (λ) คือข้อใด", "choices": ["v = fλ", "v = f/λ", "v = λ/f", "v = f + λ"], "answer": 0, "explain": "อัตราเร็วคลื่น v = fλ (ความถี่คูณความยาวคลื่น)"}, {"id": "M12-K3", "type": "ความรู้ความจำ", "q": "คาบ (T) และความถี่ (f) สัมพันธ์กันอย่างไร", "choices": ["T = 1/f", "T = f", "T = 2f", "T = f²"], "answer": 0, "explain": "คาบเป็นส่วนกลับของความถี่ T = 1/f"}, {"id": "M12-K4", "type": "ความรู้ความจำ", "q": "ปรากฏการณ์บีต (beat) เกิดจากอะไร", "choices": ["คลื่นเสียงสองขบวนที่มีความถี่ต่างกันเล็กน้อยแทรกสอดกัน", "คลื่นเสียงความถี่เดียวสะท้อนกลับ", "คลื่นเสียงความถี่สูงมาก", "การหักเหของเสียง"], "answer": 0, "explain": "บีตเกิดจากการแทรกสอดของคลื่นเสียงสองขบวนที่ความถี่ต่างกันเล็กน้อย ทำให้ได้ยินเสียงดัง-ค่อยสลับกัน ความถี่บีต = |f₁−f₂|"}, {"id": "M12-K5", "type": "ความรู้ความจำ", "q": "คลื่นตามขวาง (transverse wave) มีทิศการสั่นของตัวกลางเทียบกับทิศการเคลื่อนที่ของคลื่นอย่างไร", "choices": ["ตั้งฉากกัน", "ขนานกัน", "ทำมุม 45°", "ไม่มีทิศแน่นอน"], "answer": 0, "explain": "คลื่นตามขวาง ตัวกลางสั่นตั้งฉากกับทิศการเคลื่อนที่ของคลื่น (เช่น คลื่นในเส้นเชือก) ต่างจากคลื่นตามยาวที่สั่นในแนวเดียวกับการเคลื่อนที่ (เช่น เสียง)"}, {"id": "M12-A1", "type": "วิเคราะห์", "q": "ในการแกว่งของลูกตุ้มอย่างง่าย (มุมเล็ก) คาบการแกว่งขึ้นกับปริมาณใด", "choices": ["ความยาวเชือกและค่า g เท่านั้น (ไม่ขึ้นกับมวล)", "มวลของลูกตุ้มเท่านั้น", "แอมพลิจูดการแกว่ง", "ทั้งมวลและความยาว"], "answer": 0, "explain": "T = 2π√(L/g) ขึ้นกับความยาวเชือกและ g เท่านั้น ไม่ขึ้นกับมวลหรือแอมพลิจูด (สำหรับมุมเล็ก)"}, {"id": "M12-A2", "type": "วิเคราะห์", "q": "ในการเคลื่อนที่แบบ SHM ณ ตำแหน่งสมดุล (x=0) ความเร็วและความเร่งของวัตถุเป็นอย่างไร", "choices": ["ความเร็วสูงสุด ความเร่งเป็นศูนย์", "ความเร็วเป็นศูนย์ ความเร่งสูงสุด", "ทั้งสองเป็นศูนย์", "ทั้งสองสูงสุด"], "answer": 0, "explain": "ที่ตำแหน่งสมดุล x=0 แรงคืนตัวเป็นศูนย์ (a=0) แต่พลังงานจลน์สูงสุด (v สูงสุด) ส่วนที่ตำแหน่งไกลสุดจะกลับกัน"}, {"id": "M12-A3", "type": "วิเคราะห์", "q": "เมื่อแหล่งกำเนิดเสียงเคลื่อนที่เข้าหาผู้สังเกตที่อยู่นิ่ง ผู้สังเกตจะได้ยินความถี่เป็นอย่างไร (ปรากฏการณ์ดอปเพลอร์)", "choices": ["สูงกว่าความถี่จริง", "ต่ำกว่าความถี่จริง", "เท่ากับความถี่จริง", "เป็นศูนย์"], "answer": 0, "explain": "เมื่อแหล่งเข้าหาผู้สังเกต ความยาวคลื่นด้านหน้าถูกบีบสั้นลง ความถี่ที่ได้ยินจึงสูงกว่าความถี่จริง (เสียงแหลมขึ้น)"}, {"id": "M12-A4", "type": "วิเคราะห์", "q": "ท่อปลายปิดหนึ่งด้าน (closed pipe) เกิดคลื่นนิ่งที่ความถี่มูลฐาน (f₁) เทียบกับท่อปลายเปิดทั้งสองด้าน (open pipe) ความยาวเท่ากันอย่างไร", "choices": ["ท่อปลายปิดมีความถี่มูลฐานเป็นครึ่งหนึ่งของท่อปลายเปิด", "เท่ากัน", "ท่อปลายปิดมีความถี่มูลฐานเป็นสองเท่า", "ไม่เกี่ยวข้องกัน"], "answer": 0, "explain": "ท่อปลายเปิด f₁ = v/2L, ท่อปลายปิด f₁ = v/4L ดังนั้นท่อปลายปิดมีความถี่มูลฐานเป็นครึ่งหนึ่ง (เสียงทุ้มกว่า)"}, {"id": "M12-A5", "type": "วิเคราะห์", "q": "ในคลื่นนิ่ง (standing wave) ตำแหน่งบัพ (node) มีลักษณะอย่างไร", "choices": ["จุดที่ตัวกลางไม่สั่น (แอมพลิจูดเป็นศูนย์)", "จุดที่สั่นมากที่สุด", "จุดที่คลื่นเคลื่อนที่เร็วที่สุด", "จุดที่มีความถี่สูงสุด"], "answer": 0, "explain": "บัพ (node) คือจุดที่เกิดการแทรกสอดแบบหักล้าง ตัวกลางไม่สั่น (แอมพลิจูด=0) ส่วนปฏิบัพ (antinode) คือจุดที่สั่นมากที่สุด"}, {"id": "M12-EC1", "type": "คำนวณง่าย", "q": "คลื่นความถี่ 50 Hz มีความยาวคลื่น 4 m มีอัตราเร็วเท่าใด", "choices": ["200 m/s", "12.5 m/s", "54 m/s", "46 m/s"], "answer": 0, "explain": "v = fλ = (50)(4) = 200 m/s"}, {"id": "M12-EC2", "type": "คำนวณง่าย", "q": "คลื่นมีความถี่ 25 Hz มีคาบเท่าใด", "choices": ["0.04 s", "25 s", "0.4 s", "2.5 s"], "answer": 0, "explain": "T = 1/f = 1/25 = 0.04 s"}, {"id": "M12-EC3", "type": "คำนวณง่าย", "q": "ส้อมเสียงสองอันความถี่ 256 Hz และ 260 Hz สั่นพร้อมกัน จะได้ยินความถี่บีตเท่าใด", "choices": ["4 Hz", "516 Hz", "258 Hz", "2 Hz"], "answer": 0, "explain": "ความถี่บีต = |f₁ − f₂| = |256 − 260| = 4 Hz"}, {"id": "M12-MC1", "type": "คำนวณปานกลาง", "q": "มวล 2 kg ติดสปริงค่านิจ k = 200 N/m สั่นแบบ SHM มีคาบการสั่นเท่าใด", "choices": ["≈ 0.63 s", "≈ 6.3 s", "≈ 0.1 s", "≈ 1.0 s"], "answer": 0, "explain": "T = 2π√(m/k) = 2π√(2/200) = 2π√0.01 = 2π(0.1) ≈ 0.63 s"}, {"id": "M12-MC2", "type": "คำนวณปานกลาง", "q": "แหล่งกำเนิดเสียงนิ่งส่งเสียงความถี่ 200 Hz ผู้สังเกตเคลื่อนที่เข้าหาแหล่งด้วยอัตราเร็วเท่ากับอัตราเร็วเสียง (v_o = v) จะได้ยินความถี่เท่าใด", "choices": ["400 Hz", "200 Hz", "100 Hz", "600 Hz"], "answer": 0, "explain": "ผู้สังเกตเข้าหา: f' = f(v+v_o)/v = 200(v+v)/v = 200(2) = 400 Hz"}]}};
+
+/* ================= state ================= */
+let S = { sid:null, group:null, alias:null, mod:null, modName:"", qs:[], i:0, ans:[], timer:null, left:0 };
+const $ = id=>document.getElementById(id);
+const show = id=>{ ["scLogin","scQuiz","scResult"].forEach(s=>$(s).classList.add("hide")); $(id).classList.remove("hide"); window.scrollTo(0,0); };
+function msg(el,type,html){ const m=$(el); m.className="msg show "+type; m.innerHTML=html; }
+
+async function postJSON(payload){
+  const res = await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)});
+  return res.json();
+}
+function shuffle(a){ const x=a.slice(); for(let i=x.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [x[i],x[j]]=[x[j],x[i]]; } return x; }
+
+/* แปลงรหัสโมดูล เช่น A1 -> {group:"A", mod:1} — ยึดตัวเลขเป็นหลัก */
+function parseCode(code){
+  const c = String(code||"").trim().toUpperCase();
+  const m = c.match(/^([A-Z]+)\s*0*(\d{1,2})$/);
+  if(!m) return null;
+  return { group:m[1], mod:parseInt(m[2],10) };
+}
+
+/* ================= ขั้นที่ 1 : ตรวจสอบรหัส ================= */
+let VERIFIED = null;   // เก็บข้อมูลผู้เล่นที่ยืนยันแล้ว
+
+$("btnCheck").addEventListener("click", async ()=>{
+  const sid = $("sid").value.trim();
+  if(!sid){ msg("loginMsg","err","⚠ กรุณากรอก<b>รหัสประจำตัวนักเรียน</b>"); $("sid").focus(); return; }
+
+  const btn=$("btnCheck"), orig=btn.innerHTML;
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span>กำลังตรวจสอบ...';
+  $("loginMsg").className="msg";
+
+  try{
+    let user;
+    if(!API_URL.startsWith("PASTE_")){
+      const r = await postJSON({action:"lookup", sid});
+      if(r.status!=="found"){
+        msg("loginMsg","err","⚠ ไม่พบรหัส <b>"+sid+"</b> ในระบบ<br>กรุณาตรวจสอบรหัสอีกครั้ง หรือ <a href='register.html' style='color:#1E6091;font-weight:700'>ลงทะเบียนที่นี่</a>");
+        btn.disabled=false; btn.innerHTML=orig; $("sid").select(); return;
+      }
+      user = r;
+    }else{
+      user = { sid, group:"A", alias:"ผู้ทดลองระบบ" };   // โหมดทดลอง (ยังไม่ตั้ง API_URL)
+    }
+
+    VERIFIED = user;
+    $("vAlias").textContent = user.alias || "(ไม่มีนามแฝง)";
+    $("vSid").textContent   = user.sid;
+    $("vGroup").textContent = user.group || "—";
+    $("step1").classList.add("hide");
+    $("step2").classList.remove("hide");
+    $("loginMsg").className="msg";
+    btn.disabled=false; btn.innerHTML=orig;
+    setTimeout(()=>$("mcode").focus(), 150);
+  }catch(err){
+    msg("loginMsg","err","⚠ เชื่อมต่อไม่สำเร็จ: "+err.message);
+    btn.disabled=false; btn.innerHTML=orig;
+  }
+});
+
+/* ย้อนกลับไปกรอกรหัสใหม่ */
+$("btnNotMe").addEventListener("click", ()=>{
+  VERIFIED=null;
+  $("step2").classList.add("hide");
+  $("step1").classList.remove("hide");
+  $("loginMsg").className="msg";
+  $("mcode").value="";
+  $("sid").focus(); $("sid").select();
+});
+
+/* ================= ขั้นที่ 2 : ยืนยันและเริ่มทำ ================= */
+$("btnStart").addEventListener("click", ()=>{
+  if(!VERIFIED){ msg("loginMsg","err","⚠ กรุณาตรวจสอบรหัสประจำตัวก่อน"); return; }
+  const code = $("mcode").value.trim();
+  if(!code){ msg("loginMsg","err","⚠ กรุณากรอก<b>รหัสโมดูล</b> ที่ครูแจ้ง"); $("mcode").focus(); return; }
+  const p = parseCode(code);
+  if(!p){ msg("loginMsg","err","⚠ รูปแบบรหัสโมดูลไม่ถูกต้อง (ตัวอย่างที่ถูก: <b>A1</b>, <b>B7</b>)"); return; }
+  if(!QUIZ_DB[p.mod]){
+    const avail = Object.keys(QUIZ_DB).sort((a,b)=>a-b).join(", ");
+    msg("loginMsg","warn","● ยังไม่มีชุดข้อสอบของโมดูล <b>"+p.mod+"</b><br>โมดูลที่เปิดให้ทำแล้ว: <b>"+avail+"</b>"); return;
+  }
+
+  S.sid=VERIFIED.sid; S.group=VERIFIED.group; S.alias=VERIFIED.alias;
+  S.mod=p.mod; S.modName="โมดูล "+p.mod;
+  const db=QUIZ_DB[p.mod];
+  // สลับลำดับข้อ + สลับตัวเลือกในแต่ละข้อ
+  S.qs = shuffle(db.questions).map(q=>{
+    const pack = q.choices.map((c,idx)=>({text:c, isCorrect:idx===q.answer}));
+    const sh = shuffle(pack);
+    return { id:q.id, type:q.type, q:q.q, explain:q.explain,
+             choices:sh.map(o=>o.text), answer:sh.findIndex(o=>o.isCorrect) };
+  });
+  S.i=0; S.ans=[];
+  $("modLabel").textContent = S.modName.toUpperCase()+" · "+db.title+" · "+S.alias;
+  $("qAll").textContent = S.qs.length;
+  $("rTotal").textContent = S.qs.length;
+  show("scQuiz"); renderQ();
+});
+
+/* ================= แสดงคำถาม ================= */
+function renderQ(){
+  const q = S.qs[S.i];
+  $("qNow").textContent = S.i+1;
+  $("pfill").style.width = ((S.i)/S.qs.length*100)+"%";
+  $("qtypeChip").innerHTML = '<span class="qtype '+TYPECLASS[q.type]+'">'+q.type+'</span>';
+  $("qText").textContent = q.q;
+  const box=$("qOpts"); box.innerHTML="";
+  q.choices.forEach((c,j)=>{
+    const b=document.createElement("button");
+    b.className="opt"; b.innerHTML='<span class="k">'+KEY[j]+'</span><span>'+c+'</span>';
+    b.onclick=()=>pick(j,b);
+    box.appendChild(b);
+  });
+  startTimer(TIME[q.type] || 45);
+}
+
+function startTimer(sec){
+  clearInterval(S.timer);
+  S.left=sec; const total=sec, C=2*Math.PI*22;
+  const ring=$("tRing"), num=$("tNum"), boxT=$("timerBox");
+  ring.style.strokeDasharray=C; ring.style.strokeDashoffset=0;
+  boxT.classList.remove("warnT"); ring.setAttribute("stroke","#1E6091");
+  num.textContent=sec;
+  S.timer=setInterval(()=>{
+    S.left--;
+    num.textContent=S.left;
+    ring.style.strokeDashoffset = C*(1-S.left/total);
+    if(S.left<=5){ boxT.classList.add("warnT"); ring.setAttribute("stroke","#c0492f"); }
+    else if(S.left<=10){ ring.setAttribute("stroke","#B67C09"); }
+    if(S.left<=0){ clearInterval(S.timer); timeUp(); }
+  },1000);
+}
+
+function pick(j,btn){
+  clearInterval(S.timer);
+  [...$("qOpts").children].forEach(b=>b.classList.add("lock"));
+  btn.classList.add("sel");
+  S.ans.push({ picked:j, timeout:false });
+  setTimeout(next, 260);
+}
+function timeUp(){
+  [...$("qOpts").children].forEach(b=>b.classList.add("lock"));
+  S.ans.push({ picked:-1, timeout:true });
+  setTimeout(next, 500);
+}
+function next(){
+  S.i++;
+  if(S.i < S.qs.length){ renderQ(); }
+  else{ finish(); }
+}
+
+/* ================= สรุปผล ================= */
+const MEMES = [
+  { min:15, bg:"linear-gradient(135deg,#fff6d8,#ffe9a8)", color:"#7a5a00", art:"trophy",
+    title:"เพอร์เฟกต์! 15 เต็ม 🏆", text:"ระดับตำนานของจริง! ความรู้แน่นทุกข้อ ไม่พลาดแม้แต่ข้อเดียว<br>ค่าย 1 นี่เล็กไปแล้ว ไปต่อค่าย 2 เลย!" },
+  { min:13, bg:"linear-gradient(135deg,#e6f7ef,#c6ecdb)", color:"#0a6a4c", art:"rocket",
+    title:"เก่งมาก! 🚀", text:"พุ่งทะยานเหมือนจรวดหลุดพ้นแรงโน้มถ่วง<br>อีกนิดเดียวก็เพอร์เฟกต์แล้ว ทบทวนข้อที่พลาดอีกรอบนะ" },
+  { min:10, bg:"linear-gradient(135deg,#e8f2fb,#cfe4f5)", color:"#1a5580", art:"atom",
+    title:"ผ่านฉลุย! ⚛️", text:"พื้นฐานแน่นใช้ได้เลย! ทำได้เกินครึ่งอย่างสบาย<br>ลองเก็บข้อคำนวณให้ครบ แล้วคะแนนจะพุ่งอีก" },
+  { min:7, bg:"linear-gradient(135deg,#fdf3e0,#f8e3ba)", color:"#8a6210", art:"pendulum",
+    title:"มาถูกทางแล้ว! 💪", text:"เหมือนลูกตุ้มที่กำลังแกว่งเข้าที่ ยังไม่นิ่งแต่ก็ใกล้แล้ว<br>อ่านเฉลยข้างล่างให้ครบ แล้วลองใหม่อีกรอบ" },
+  { min:4, bg:"linear-gradient(135deg,#fdeeea,#f8d5cb)", color:"#a63a22", art:"spring",
+    title:"ยังไม่ยอมแพ้! 🔥", text:"ทุกคนเริ่มจากศูนย์ทั้งนั้น สปริงยิ่งกดยิ่งเด้งแรง<br>อ่านเฉลยให้ละเอียด แล้วกลับมาทำใหม่ ดีขึ้นแน่นอน" },
+  { min:0, bg:"linear-gradient(135deg,#f3f0e6,#e5dfcd)", color:"#6b5f45", art:"seed",
+    title:"เริ่มต้นใหม่ได้เสมอ 🌱", text:"ไอน์สไตน์เคยสอบตกมาก่อน! ครั้งนี้แค่การวอร์มอัพ<br>ค่อย ๆ อ่านเฉลยทีละข้อ แล้วจะเข้าใจขึ้นเยอะ" }
+];
+
+const ART = {
+  trophy:`<svg class="memeArt" viewBox="0 0 120 100" fill="none">
+    <path d="M35,20 h50 v22 a25,25 0 0,1 -50,0 z" fill="#F4B740" stroke="#B67C09" stroke-width="2.5"/>
+    <path d="M35,24 h-12 a10,10 0 0,0 12,16" stroke="#B67C09" stroke-width="2.5" fill="none"/>
+    <path d="M85,24 h12 a10,10 0 0,1 -12,16" stroke="#B67C09" stroke-width="2.5" fill="none"/>
+    <rect x="52" y="66" width="16" height="14" fill="#B67C09"/>
+    <rect x="40" y="80" width="40" height="8" rx="2" fill="#8a5f07"/>
+    <g><circle cx="25" cy="18" r="3" fill="#F4B740"><animate attributeName="opacity" values="1;.2;1" dur="1.2s" repeatCount="indefinite"/></circle>
+    <circle cx="96" cy="30" r="2.5" fill="#F4B740"><animate attributeName="opacity" values=".2;1;.2" dur="1.5s" repeatCount="indefinite"/></circle>
+    <circle cx="88" cy="12" r="2" fill="#F4B740"><animate attributeName="opacity" values="1;.3;1" dur="1s" repeatCount="indefinite"/></circle></g>
+  </svg>`,
+  rocket:`<svg class="memeArt" viewBox="0 0 120 100" fill="none">
+    <g><animateTransform attributeName="transform" type="translate" values="0,4;0,-4;0,4" dur="1.6s" repeatCount="indefinite"/>
+    <path d="M60,14 c12,12 16,28 16,42 h-32 c0,-14 4,-30 16,-42 z" fill="#12B886" stroke="#0a6a4c" stroke-width="2.5"/>
+    <circle cx="60" cy="40" r="7" fill="#fff" stroke="#0a6a4c" stroke-width="2"/>
+    <path d="M44,48 l-12,14 h12 z" fill="#0d8a63"/><path d="M76,48 l12,14 h-12 z" fill="#0d8a63"/>
+    <path d="M52,58 q8,18 8,26 q0,-8 8,-26 z" fill="#F4B740">
+      <animate attributeName="opacity" values="1;.45;1" dur=".35s" repeatCount="indefinite"/></path></g>
+  </svg>`,
+  atom:`<svg class="memeArt" viewBox="0 0 120 100" fill="none">
+    <g transform="translate(60,50)">
+      <ellipse rx="42" ry="16" stroke="#1E6091" stroke-width="2.5" fill="none"/>
+      <ellipse rx="42" ry="16" stroke="#3BA3C7" stroke-width="2.5" fill="none" transform="rotate(60)"/>
+      <ellipse rx="42" ry="16" stroke="#6b5bb5" stroke-width="2.5" fill="none" transform="rotate(120)"/>
+      <circle r="8" fill="#1E6091"/>
+      <circle cx="42" cy="0" r="5" fill="#F4B740">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2.4s" repeatCount="indefinite"/></circle>
+      <circle cx="42" cy="0" r="5" fill="#12B886">
+        <animateTransform attributeName="transform" type="rotate" from="120" to="480" dur="3s" repeatCount="indefinite"/></circle>
+    </g></svg>`,
+  pendulum:`<svg class="memeArt" viewBox="0 0 120 100" fill="none">
+    <line x1="20" y1="16" x2="100" y2="16" stroke="#5c4f38" stroke-width="3"/>
+    <g transform="translate(60,16)">
+      <animateTransform attributeName="transform" type="rotate" values="-26;26;-26" dur="2s"
+        repeatCount="indefinite" calcMode="spline" keyTimes="0;.5;1" keySplines=".4 0 .6 1;.4 0 .6 1" additive="sum"/>
+      <line x1="0" y1="0" x2="0" y2="52" stroke="#8a7c62" stroke-width="2"/>
+      <circle cx="0" cy="60" r="12" fill="#F4B740" stroke="#B67C09" stroke-width="2.5"/>
+    </g></svg>`,
+  spring:`<svg class="memeArt" viewBox="0 0 120 100" fill="none">
+    <line x1="26" y1="14" x2="94" y2="14" stroke="#5c4f38" stroke-width="3"/>
+    <g><animateTransform attributeName="transform" type="translate" values="0,0;0,14;0,0" dur="1.1s" repeatCount="indefinite"/>
+    <path d="M60,14 l-11,8 l22,8 l-22,8 l22,8 l-22,8 l11,6" stroke="#c0492f" stroke-width="2.8" fill="none"/>
+    <rect x="44" y="60" width="32" height="22" rx="4" fill="#E8654A" stroke="#a63a22" stroke-width="2.5"/></g>
+  </svg>`,
+  seed:`<svg class="memeArt" viewBox="0 0 120 100" fill="none">
+    <path d="M40,84 h40 l-5,-14 h-30 z" fill="#c9b896" stroke="#8a7c62" stroke-width="2"/>
+    <line x1="60" y1="70" x2="60" y2="42" stroke="#0d8a63" stroke-width="3"/>
+    <g><animateTransform attributeName="transform" type="rotate" values="-6 60 46;6 60 46;-6 60 46" dur="2.4s" repeatCount="indefinite"/>
+    <path d="M60,46 q-20,-10 -22,-24 q18,-2 22,24 z" fill="#12B886"/>
+    <path d="M60,52 q20,-8 24,-22 q-19,-3 -24,22 z" fill="#0d8a63"/></g>
+  </svg>`
+};
+
+function finish(){
+  clearInterval(S.timer);
+  $("pfill").style.width="100%";
+  let ok=0,no=0,to=0;
+  S.qs.forEach((q,i)=>{
+    const a=S.ans[i];
+    if(a.timeout) to++;
+    else if(a.picked===q.answer) ok++;
+    else no++;
+  });
+  $("rScore").textContent=ok; $("rOk").textContent=ok; $("rNo").textContent=no; $("rTo").textContent=to;
+
+  const meme = MEMES.find(m=>ok>=m.min) || MEMES[MEMES.length-1];
+  $("memeBox").style.background=meme.bg; $("memeBox").style.color=meme.color;
+  $("memeBox").innerHTML = ART[meme.art] +
+    '<div class="memeTitle">'+meme.title+'</div><div class="memeText">'+meme.text+'</div>';
+
+  // เฉลยรวม
+  const rev=$("review"); rev.innerHTML="";
+  S.qs.forEach((q,i)=>{
+    const a=S.ans[i], correct=!a.timeout && a.picked===q.answer;
+    const d=document.createElement("div");
+    d.className="revItem"+(correct?"":" wrong");
+    let mark = correct?'<span class="mark ok">✓ ถูก</span>'
+             : a.timeout?'<span class="mark to">⏱ หมดเวลา</span>'
+             : '<span class="mark no">✕ ผิด</span>';
+    let yours = (!correct && !a.timeout)
+      ? '<div class="rline yours">คำตอบของคุณ: '+KEY[a.picked]+'. '+q.choices[a.picked]+'</div>' : "";
+    d.innerHTML='<div class="rtop"><span class="rno">ข้อ '+(i+1)+' · '+q.type+'</span>'+mark+'</div>'+
+      '<div class="rq">'+q.q+'</div>'+ yours +
+      '<div class="rline correct">เฉลย: '+KEY[q.answer]+'. '+q.choices[q.answer]+'</div>'+
+      '<div class="rexp">'+q.explain+'</div>';
+    rev.appendChild(d);
+  });
+
+  show("scResult");
+  if(ok>=10) burstConfetti(ok>=13?150:90);
+  saveResult(ok);
+}
+
+async function saveResult(score){
+  if(API_URL.startsWith("PASTE_")){
+    msg("saveMsg","warn","● โหมดทดลอง — ยังไม่ได้ตั้งค่า API_URL จึงไม่ได้บันทึกคะแนนลงชีต");
+    return;
+  }
+  try{
+    const r = await postJSON({ action:"saveScore", sid:S.sid, module:S.modName, score });
+    if(r.status==="saved"){
+      msg("saveMsg","ok", r.improved
+        ? "✓ บันทึกคะแนนเรียบร้อย ("+S.modName+": <b>"+r.best+"</b> คะแนน)"
+        : "✓ บันทึกแล้ว — คะแนนเดิมของคุณสูงกว่า ระบบเก็บ <b>"+r.best+"</b> คะแนนไว้");
+    }else{
+      msg("saveMsg","err","⚠ บันทึกไม่สำเร็จ: "+(r.message||r.status));
+    }
+  }catch(err){ msg("saveMsg","err","⚠ บันทึกไม่สำเร็จ: "+err.message); }
+}
+
+$("btnAgain").addEventListener("click", ()=>{
+  $("mcode").value=""; $("loginMsg").className="msg";
+  // ยังยืนยันตัวตนอยู่แล้ว — กลับไปขั้นที่ 2 เลย ไม่ต้องตรวจรหัสซ้ำ
+  if(VERIFIED){ $("step1").classList.add("hide"); $("step2").classList.remove("hide"); }
+  else{ $("step2").classList.add("hide"); $("step1").classList.remove("hide"); }
+  show("scLogin");
+  setTimeout(()=>$("mcode").focus(), 150);
+});
+
+/* ================= confetti ================= */
+function burstConfetti(n){
+  const cv=$("confetti"); cv.style.display="block";
+  const ctx=cv.getContext("2d");
+  cv.width=innerWidth; cv.height=innerHeight;
+  const cols=["#F4B740","#12B886","#3BA3C7","#1E6091","#c0492f","#6b5bb5"];
+  const P=[];
+  for(let i=0;i<n;i++) P.push({
+    x:Math.random()*cv.width, y:-20-Math.random()*cv.height*.4,
+    w:6+Math.random()*7, h:9+Math.random()*9,
+    vy:2.2+Math.random()*3.2, vx:-1.4+Math.random()*2.8,
+    rot:Math.random()*6.28, vr:-.14+Math.random()*.28,
+    c:cols[Math.floor(Math.random()*cols.length)]
+  });
+  let frames=0;
+  (function loop(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    P.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.vy+=.035;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+      ctx.fillStyle=p.c; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+    });
+    frames++;
+    if(frames<340) requestAnimationFrame(loop);
+    else { ctx.clearRect(0,0,cv.width,cv.height); cv.style.display="none"; }
+  })();
+}
+
+/* prefill จากหน้าลงทะเบียน */
+(function(){
+  try{ const p=JSON.parse(sessionStorage.getItem("posn_player")||"null");
+       if(p&&p.sid) $("sid").value=p.sid; }catch(e){}
+})();
+$("sid").addEventListener("keydown",e=>{ if(e.key==="Enter") $("btnCheck").click(); });
+$("mcode").addEventListener("keydown",e=>{ if(e.key==="Enter") $("btnStart").click(); });
+</script>
+</body>
+</html>
